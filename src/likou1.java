@@ -155,15 +155,32 @@ public class likou1 {
         boolean isPosNum = true;
         char[] chars = s.toCharArray();
 
+
         for (int i = 0; i < len; i++) {
-            if (i == 0 && chars[i] == '-') {
+
+            if (chars.length == 1) {
+                if (chars[0] == '+' || chars[0] == '-') {
+                    break;
+                }
+            }
+
+            if (i == 0 && chars[i] == '-' && chars.length > 1) {
+                if (!(chars[i + 1] >= '1' && chars[i + 1] <= '9' || chars[i+1] == '0')) {
+                    break;
+                }
                 result.append(chars[i]);
-                isPosNum = false;
                 continue;
             }
-            if (chars[i] >= 'a' && chars[i] <= 'z' || chars[i] >= 'A' && chars[i] <= 'Z') {
+            if (i == 0 && chars[i] == '+' && chars.length > 1) {
+                if (!(chars[i + 1] >= '1' && chars[i + 1] <= '9' || chars[i+1] == '0')) {
+                    break;
+                }
+                result.append(chars[i]);
+                continue;
+            }
+            if (chars[i] >= 'a' && chars[i] <= 'z' || chars[i] >= 'A' && chars[i] <= 'Z' || chars[i] == '-' || chars[i] == '+') {
                 break;
-            } else if (chars[i] >= '1' && chars[i] <= '9' || chars[i] == '.') {
+            } else if (chars[i] >= '1' && chars[i] <= '9' || chars[i] == '0' || chars[i] == '.') {
                 result.append(chars[i]);
             }
         }
