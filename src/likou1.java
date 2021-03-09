@@ -1,4 +1,7 @@
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class likou1 {
     public static void main(String[] args) {
@@ -11,7 +14,17 @@ public class likou1 {
 //        System.out.println(longestPalindrome("ac"));
 //        System.out.println(convert("PAYPALISHIRING", 3));
 
-        System.out.println(myAtoi("3.14159"));
+//        System.out.println(myAtoi("3.14159"));
+//        int[] height = new int[]{1,8,6,2,5,4,8,3,7};
+//        int[] height = new int[]{1,1};
+//        int[] height = new int[]{4,3,2,1,4};
+//        int[] height = new int[]{1, 2, 1};
+//        System.out.println(maxArea(height));
+
+//        System.out.println(intToRoman(1994));
+
+        int[] nums = new int[]{0};
+        System.out.println(threeSum(nums));
     }
 
     /*public static void merge(int[] nums1, int m, int[] nums2, int n) {
@@ -165,14 +178,14 @@ public class likou1 {
             }
 
             if (i == 0 && chars[i] == '-' && chars.length > 1) {
-                if (!(chars[i + 1] >= '1' && chars[i + 1] <= '9' || chars[i+1] == '0')) {
+                if (!(chars[i + 1] >= '1' && chars[i + 1] <= '9' || chars[i + 1] == '0')) {
                     break;
                 }
                 result.append(chars[i]);
                 continue;
             }
             if (i == 0 && chars[i] == '+' && chars.length > 1) {
-                if (!(chars[i + 1] >= '1' && chars[i + 1] <= '9' || chars[i+1] == '0')) {
+                if (!(chars[i + 1] >= '1' && chars[i + 1] <= '9' || chars[i + 1] == '0')) {
                     break;
                 }
                 result.append(chars[i]);
@@ -195,6 +208,108 @@ public class likou1 {
         }
 
         return (int) parseLong;
+    }
+
+    /*public static int maxArea(int[] height) {
+        if(height == null || height.length == 0){
+            return 0;
+        }
+        int vo = 0, newVo = 0;
+        for (int i = 0; i < height.length - 1; i++) {
+            for (int j = i + 1; j < height.length; j++) {
+                if (height[i] < height[j]) {
+                    newVo = (j - i) * height[i];
+                } else {
+                    newVo = (j - i) * height[j];
+                }
+                vo = vo > newVo ? vo : newVo;
+            }
+        }
+        return vo;
+    }*/
+    public static int maxArea(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int i = 0, j = height.length - 1;
+        int vo = 0;
+        while (i < j) {
+            int h = Math.min(height[i], height[j]);
+            vo = Math.max(vo, (j - i) * h);
+            if (height[i] < height[j]) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return vo;
+    }
+
+    public static String intToRoman(int num) {
+
+        StringBuilder result = new StringBuilder();
+        int[] values = new int[]{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] symbols = new String[]{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        for (int i = 0; i < values.length; i++) {
+            while (num >= values[i]) {
+                num -= values[i];
+                result.append(symbols[i]);
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < nums.length - 2; i++) {
+            for (int j = i + 1; j < nums.length - 1; j++) {
+                for (int k = j + 1; k < nums.length; k++) {
+                    if (nums[i] + nums[j] + nums[k] == 0) {
+                        List<Integer> tmp = new ArrayList<>(Arrays.asList(nums[i], nums[j], nums[k]));
+                        boolean flag = true;
+                        for (List<Integer> list : res) {
+                            List<Integer> one = new ArrayList<>(list), two = new ArrayList<>(tmp);
+                            Collections.sort(one);
+                            Collections.sort(two);
+                            if (one.equals(two)) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag) {
+                            res.add(tmp);
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    public static ListNode removeNthFromEnd(ListNode head, int n) {
+
+
+
+        return null;
+    }
+}
+
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode() {
+    }
+
+    ListNode(int val) {
+        this.val = val;
+    }
+
+    ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
     }
 }
 
