@@ -16,9 +16,17 @@ public class likou_array {
 
         /*int[][] grid = {{1, 0, 1}, {0, 0, 0}, {1, 0, 1}};
         System.out.println(maxDistance(grid));*/
-        int[][] grid = {{2, 1, 1}, {1, 1, 0}, {0, 1, 1}};
-        System.out.println(orangesRotting(grid));
+        /*int[][] grid = {{2, 1, 1}, {1, 1, 0}, {0, 1, 1}};
+        System.out.println(orangesRotting(grid));*/
+        /*int[] nums = {-1, 0, 1, 2, -1, -4};
+        System.out.println(threeSum(nums));*/
+        /*int[] nums = {-3, -2, -5, 3, -4};
+        System.out.println(threeSumClosest(nums, -1));*/
+        /*int[] nums = {1, 0, -1, 0, -2, 2};
+        System.out.println(fourSum1(nums, 0));*/
 
+        int[] nums = {5, 1, 1};
+        nextPermutation(nums);
     }
 
     /**
@@ -482,14 +490,212 @@ public class likou_array {
         return distance;
     }
 
-
     /**
      * 15. 三数之和
+     *
      * @param nums
      * @return
      */
     public static List<List<Integer>> threeSum(int[] nums) {
-        return null;
+        if (nums == null || nums.length < 3) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        int n = nums.length;
+        //枚举i
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int k = n - 1;
+            int target = -nums[i];
+            //枚举j
+            for (int j = i + 1; j < nums.length; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                while (j < k && nums[j] + nums[k] > target) {
+                    k--;
+                }
+                // 如果指针重合，随着 b 后续的增加
+                // 就不会有满足 a+b+c=0 并且 b<c 的 c 了，可以退出循环
+                if (j == k) {
+                    break;
+                }
+                if (nums[j] + nums[k] == target) {
+                    List<Integer> temp = new ArrayList<>(Arrays.asList(nums[i], nums[j], nums[k]));
+                    result.add(temp);
+                }
+
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 16. 最接近的三数之和
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public static int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int res = 10000;
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int j = i + 1, k = n - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == target) {
+                    return sum;
+                }
+                if (Math.abs(sum - target) < Math.abs(res - target)) {
+                    res = sum;
+                }
+                if (sum > target) {
+                    int k0 = k - 1;
+                    while (j < k0 && nums[k0] == nums[k]) {
+                        k0--;
+                    }
+                    k = k0;
+                } else {
+                    int j0 = j + 1;
+                    while (j0 < k && nums[j0] == nums[j]) {
+                        j0++;
+                    }
+                    j = j0;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 18. 四数之和
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public static List<List<Integer>> fourSum(int[] nums, int target) {
+        if (nums == null || nums.length <= 3) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        int n = nums.length;
+        List<List<Integer>> result = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            for (int j = i + 1; j < n; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                int s = n - 1;
+                for (int k = j + 1; k < n; k++) {
+                    if (k > j + 1 && nums[k] == nums[k - 1]) {
+                        continue;
+                    }
+                    while (k < s && nums[i] + nums[j] + nums[k] + nums[s] > target) {
+                        s--;
+                    }
+                    if (s == k) {
+                        break;
+                    }
+                    if (nums[i] + nums[j] + nums[k] + nums[s] == target) {
+                        List<Integer> temp = new ArrayList<>(Arrays.asList(nums[i], nums[j], nums[k], nums[s]));
+                        result.add(temp);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static List<List<Integer>> fourSum1(int[] nums, int target) {
+        if (nums == null || nums.length <= 3) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        int n = nums.length;
+        List<List<Integer>> result = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            for (int j = i + 1; j < n; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                int k = j + 1, s = n - 1;
+                while (k < s) {
+                    int sum = nums[i] + nums[j] + nums[k] + nums[s];
+                    if (sum == target) {
+                        List<Integer> temp = new ArrayList<>(Arrays.asList(nums[i], nums[j], nums[k], nums[s]));
+                        result.add(temp);
+                        while (k < s && nums[k] == nums[k + 1]) {
+                            k++;
+                        }
+                        k++;
+                        while (k < s && nums[s] == nums[s - 1]) {
+                            s--;
+                        }
+                        s--;
+                    } else if (sum < target) {
+                        k++;
+                    } else {
+                        s--;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 31. 下一个排列
+     *
+     * @param nums
+     */
+    public static void nextPermutation(int[] nums) {
+        if (nums.length == 1) {
+            return;
+        }
+        int i = nums.length - 2, j = nums.length - 1;
+        while (i < j && i >= 0) {
+            if (nums[i] >= nums[j]) {
+                i--;
+                j--;
+            } else {
+                int k = nums.length - 1;
+                while (k > i) {
+                    if (nums[k] <= nums[i]) {
+                        k--;
+                    } else {
+                        int temp = nums[i];
+                        nums[i] = nums[k];
+                        nums[k] = temp;
+                        break;
+                    }
+                }
+
+                Arrays.sort(nums, i + 1, nums.length);
+                break;
+            }
+            if (i == 0 && j == 1 && nums[i] > nums[j]) {
+                Arrays.sort(nums);
+                break;
+            }
+        }
+        for (int num : nums) {
+            System.out.print(num);
+        }
     }
 }
 
