@@ -25,23 +25,22 @@ public class likou_array {
         /*int[] nums = {1, 0, -1, 0, -2, 2};
         System.out.println(fourSum1(nums, 0));*/
 
-        int[] nums = {5, 1, 1};
-        nextPermutation(nums);
+        /*int[] nums = {4, 5, 6, 7, 0, 1, 2};
+        System.out.println(search1(nums, 3));*/
+        /*int[] nums = {2, 2};
+        int[] searchRange = searchRange(nums, 2);
+        for (int i : searchRange) {
+            System.out.println(i);
+        }*/
+
+        int[] nums = {1, 3, 5, 6};
+        System.out.println(searchInsert(nums, 5));
     }
 
     /**
      * 转置矩阵
-     * 1,2,3
-     * 4,5,6
-     * 7,8,9
-     * <p>
-     * <p>
-     * 1,2,3
-     * 4,5,6
-     * <p>
-     * 1,4
-     * 2,5
-     * 3,6
+     * @param matrix
+     * @return
      */
     public static int[][] transpose(int[][] matrix) {
 
@@ -696,6 +695,115 @@ public class likou_array {
         for (int num : nums) {
             System.out.print(num);
         }
+    }
+
+    /**
+     * 33. 搜索旋转排序数组
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public static int search(int[] nums, int target) {
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == target) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    //二分法
+    public static int search1(int[] nums, int target) {
+        if (nums.length == 0) {
+            return -1;
+        }
+        if (nums.length == 1) {
+            return nums[0] == target ? 0 : -1;
+        }
+        int n = nums.length;
+        int left = 0, right = n - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[left] <= nums[mid]) {
+                if (nums[left] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (nums[mid] < target && target < nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 34. 在排序数组中查找元素的第一个和最后一个位置
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public static int[] searchRange(int[] nums, int target) {
+        if (nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        if (nums.length == 1) {
+            if (nums[0] == target) {
+                return new int[]{0, 0};
+            }
+        }
+        int n = nums.length;
+        int left = 0, right = n - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) {
+                int ml = mid - 1;
+                while (ml >= 0 && nums[ml] == nums[mid]) {
+                    ml--;
+                }
+                int mr = mid + 1;
+                while (mr < n && nums[mr] == nums[mid]) {
+                    mr++;
+                }
+                return new int[]{ml + 1, mr - 1};
+            }
+            if (nums[left] <= target && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return new int[]{-1, -1};
+    }
+
+    /**
+     * 35. 搜索插入位置
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public static int searchInsert(int[] nums, int target) {
+        int left = 0, right = nums.length - 1, ans = nums.length;
+        while (left <= right) {
+            int mid = left + ((right - left) >> 1);
+            if (target <= nums[mid]) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ans;
     }
 }
 
