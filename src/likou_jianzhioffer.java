@@ -76,9 +76,9 @@ public class likou_jianzhioffer {
         StringBuilder builder = new StringBuilder();
         char[] chars = s.toCharArray();
         for (char ch : chars) {
-            if(ch == ' '){
+            if (ch == ' ') {
                 builder.append("%20");
-            }else {
+            } else {
                 builder.append(ch);
             }
         }
