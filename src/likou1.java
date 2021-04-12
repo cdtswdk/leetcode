@@ -290,7 +290,6 @@ public class likou1 {
     public static ListNode removeNthFromEnd(ListNode head, int n) {
 
 
-
         return null;
     }
 }

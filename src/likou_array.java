@@ -25,16 +25,19 @@ public class likou_array {
         /*int[] nums = {1, 0, -1, 0, -2, 2};
         System.out.println(fourSum1(nums, 0));*/
 
-        /*int[] nums = {4, 5, 6, 7, 0, 1, 2};
-        System.out.println(search1(nums, 3));*/
+        int[] nums = {1, 0, 1, 1, 1};
+        System.out.println(searchArray(nums, 0));
         /*int[] nums = {2, 2};
         int[] searchRange = searchRange(nums, 2);
         for (int i : searchRange) {
             System.out.println(i);
         }*/
 
-        int[] nums = {1, 3, 5, 6};
-        System.out.println(searchInsert1(nums, 5));
+        /*int[] nums = {1, 3, 5, 6};
+        System.out.println(searchInsert1(nums, 5));*/
+
+        /*int[] nums = {5, 7, 7, 8, 8, 10};
+        System.out.println(Arrays.toString(searchRange1(nums, 8)));*/
     }
 
     /**
@@ -736,7 +739,7 @@ public class likou_array {
                     left = mid + 1;
                 }
             } else {
-                if (nums[mid] < target && target < nums[right]) {
+                if (nums[mid] < target && target <= nums[right]) {
                     left = mid + 1;
                 } else {
                     right = mid - 1;
@@ -744,6 +747,48 @@ public class likou_array {
             }
         }
         return -1;
+    }
+
+    /**
+     * 81. 搜索旋转排序数组 II
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public static boolean searchArray(int[] nums, int target) {
+        if (nums.length == 0) {
+            return false;
+        }
+        if (nums.length == 1) {
+            return nums[0] == target;
+        }
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] == target) {
+                return true;
+            }
+            //左边区域有序
+            if (nums[left] == nums[mid] && nums[mid] == nums[right]) {
+                left++;
+                right--;
+            } else if (nums[left] <= nums[mid]) {
+                if (nums[left] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -784,6 +829,53 @@ public class likou_array {
             }
         }
         return new int[]{-1, -1};
+    }
+
+    //分成两个区间
+    public static int[] searchRange1(int[] nums, int target) {
+        int len = nums.length;
+        if (len == 0) {
+            return new int[]{-1, -1};
+        }
+        int leftIndex = findFirstPosition(nums, target);
+        if (leftIndex == -1) {
+            return new int[]{-1, -1};
+        }
+
+        int rightIndex = findLastPosition(nums, target);
+
+        return new int[]{leftIndex, rightIndex};
+    }
+
+    private static int findFirstPosition(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            //小于的话mid分配在左区间
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (nums[left] == target) {
+            return left;
+        }
+        return -1;
+    }
+
+    private static int findLastPosition(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left + 1) / 2;
+            //小于的话mid分配在左区间
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+        return left;
     }
 
     /**
