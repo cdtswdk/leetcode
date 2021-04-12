@@ -34,11 +34,12 @@ public class likou_array {
         }*/
 
         int[] nums = {1, 3, 5, 6};
-        System.out.println(searchInsert(nums, 5));
+        System.out.println(searchInsert1(nums, 5));
     }
 
     /**
      * 转置矩阵
+     *
      * @param matrix
      * @return
      */
@@ -804,6 +805,24 @@ public class likou_array {
             }
         }
         return ans;
+    }
+
+    //分成两个区间
+    public static int searchInsert1(int[] nums, int target) {
+        int len = nums.length;
+        if (target > nums[len - 1]) {
+            return len;
+        }
+        int left = 0, right = len - 1;
+        while (left < right) {
+            int mid = left + ((right - left) >> 1);
+            if (target > nums[mid]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
     }
 }
 
