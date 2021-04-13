@@ -25,8 +25,16 @@ public class likou_jianzhioffer {
 
         /*System.out.println(fib1(3));*/
 
-        int[] nums = {2, 2, 2, 0, 1};
-        System.out.println(minArray(nums));
+        /*int[] nums = {2, 2, 2, 0, 1};
+        System.out.println(minArray(nums));*/
+
+        /*char[][] board = {{'A', 'B', 'C', 'E'}, {'S', 'F', 'E', 'S'}, {'A', 'D', 'E', 'E'}};
+//        char[][] board = {{'a', 'b'}, {'c', 'd'}};
+//        char[][] board = {{'a', 'a'}};
+//        char[][] board = {{'C', 'A', 'A'}, {'A', 'A', 'A'}, {'B', 'C', 'D'}};
+        System.out.println(exist(board, "ABCESEEEFS"));*/
+
+        System.out.println(movingCount1(3, 2, 17));
 
     }
 
@@ -331,7 +339,7 @@ public class likou_jianzhioffer {
      * @param word
      * @return
      */
-    public boolean exist(char[][] board, String word) {
+    public static boolean exist(char[][] board, String word) {
         if (board == null || board.length == 0 || board[0].length == 0) {
             return false;
         }
@@ -340,25 +348,153 @@ public class likou_jianzhioffer {
         }
 
         char[] chars = word.toCharArray();
-        Deque<Character> queue = new ArrayDeque<>();
+        Deque<int[]> queue = new ArrayDeque<>();
         int m = board.length, n = board[0].length;
+        int[][] flags = new int[m][n];
+        //把开头等于字符串的第一个字母加进队列中
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (board[i][j] == chars[0]) {
-                    queue.push(board[i][j]);
+                    queue.push(new int[]{i, j});
+                    flags[i][j] = 1;
+                } else {
+                    flags[i][j] = -1;
                 }
             }
         }
         int[][] moves = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
         while (!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                Character node = queue.pop();
-
+            int[] node = queue.pop();
+            int index = 0;
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    flags[i][j] = -1;
+                }
+            }
+            boolean path = findPath(board, chars, flags, moves, node, index);
+            if (path) {
+                return true;
             }
         }
-
         return false;
+    }
+
+    private static boolean findPath(char[][] board, char[] word, int[][] flags, int[][] moves, int[] node, int index) {
+        index++;
+        if (index == word.length) {
+            return true;
+        }
+        int r1 = node[0], c1 = node[1];
+        flags[r1][c1] = 1;
+        //对当前节点的四个方向进行遍历
+        for (int[] move : moves) {
+            int r2 = r1 + move[0], c2 = c1 + move[1];
+            if (inArea(board, r2, c2) && flags[r2][c2] == -1 && board[r2][c2] == word[index]) {
+                int[] newNode = {r2, c2};
+                boolean path = findPath(board, word, flags, moves, newNode, index);
+                if (path) {
+                    return true;
+                }
+            }
+        }
+        flags[r1][c1] = -1;
+        return false;
+    }
+
+    private static boolean inArea(char[][] board, int r2, int c2) {
+        return r2 >= 0 && r2 <= board.length - 1 && c2 >= 0 && c2 <= board[0].length - 1;
+    }
+
+    /**
+     * 剑指 Offer 13. 机器人的运动范围
+     *
+     * @param m
+     * @param n
+     * @param k
+     * @return
+     */
+    public static int movingCount(int m, int n, int k) {
+        if (k == 0) {
+            return 1;
+        }
+        int count = 0;
+        int[][] flags = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            Arrays.fill(flags[i], -1);
+        }
+        count += dfsMovingCount(m, n, k, count, 0, 0, flags);
+        return count;
+    }
+
+    private static int dfsMovingCount(int m, int n, int k, int count, int row, int col, int[][] flags) {
+        if (row >= m || row < 0 || col >= n || col < 0 || flags[row][col] == 1) {
+            return 0;
+        }
+        int tempRow = row, tempCol = col, temp = 0;
+        while (tempRow != 0) {
+            temp += tempRow % 10;
+            tempRow /= 10;
+        }
+        while (tempCol != 0) {
+            temp += tempCol % 10;
+            tempCol /= 10;
+        }
+        if (temp > k) {
+            return 0;
+        }
+        count++;
+        flags[row][col] = 1;
+        int[][] moves = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for (int[] move : moves) {
+            int r2 = row + move[0], c2 = col + move[1];
+            count = Math.max(count, dfsMovingCount(m, n, k, count, r2, c2, flags));
+        }
+        return count;
+    }
+
+    //BFS
+    public static int movingCount1(int m, int n, int k) {
+        if (k == 0) {
+            return 1;
+        }
+        int res = 1;
+        Deque<int[]> queue = new ArrayDeque<>();
+        boolean[][] visited = new boolean[m][n];
+        queue.add(new int[]{0, 0});
+        visited[0][0] = true;
+        int[][] moves = {{0, 1}, {1, 0}};
+        while (!queue.isEmpty()) {
+            int[] node = queue.pop();
+            int r1 = node[0], c1 = node[1];
+            for (int[] move : moves) {
+                int r2 = r1 + move[0], c2 = c1 + move[1];
+                if (r2 < 0 || r2 >= m || c2 < 0 || c2 >= n || visited[r2][c2] || panduan(r2, c2) > k) {
+                    continue;
+                }
+                res++;
+                visited[r2][c2] = true;
+                queue.push(new int[]{r2, c2});
+            }
+        }
+        return res;
+    }
+
+    private static int panduan(int r2, int c2) {
+
+        int tempRow = r2, tempCol = c2, temp = 0;
+        while (tempRow != 0) {
+            temp += tempRow % 10;
+            tempRow /= 10;
+        }
+        while (tempCol != 0) {
+            temp += tempCol % 10;
+            tempCol /= 10;
+        }
+        return temp;
+    }
+
+    public int cuttingRope(int n) {
+        return -1;
     }
 }
 
