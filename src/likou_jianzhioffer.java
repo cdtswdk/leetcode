@@ -338,6 +338,26 @@ public class likou_jianzhioffer {
         if ("".equals(word) || word == null) {
             return false;
         }
+
+        char[] chars = word.toCharArray();
+        Deque<Character> queue = new ArrayDeque<>();
+        int m = board.length, n = board[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] == chars[0]) {
+                    queue.push(board[i][j]);
+                }
+            }
+        }
+        int[][] moves = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Character node = queue.pop();
+
+            }
+        }
+
         return false;
     }
 }
