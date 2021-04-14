@@ -34,7 +34,16 @@ public class likou_jianzhioffer {
 //        char[][] board = {{'C', 'A', 'A'}, {'A', 'A', 'A'}, {'B', 'C', 'D'}};
         System.out.println(exist(board, "ABCESEEEFS"));*/
 
-        System.out.println(movingCount1(3, 2, 17));
+        /*System.out.println(movingCount1(3, 2, 17));*/
+
+        ListNode node1 = new ListNode(4);
+        ListNode node2 = new ListNode(5);
+        ListNode node3 = new ListNode(1);
+        ListNode node4 = new ListNode(9);
+        node1.next = node2;
+        node2.next = node3;
+        node3.next = node4;
+        deleteNode(node1, 9);
 
     }
 
@@ -493,7 +502,107 @@ public class likou_jianzhioffer {
         return temp;
     }
 
+    /**
+     * 剑指 Offer 14- I. 剪绳子
+     *
+     * @param n
+     * @return
+     */
     public int cuttingRope(int n) {
+        if (n <= 3) {
+            return n - 1;
+        }
+        int a = n / 3, b = n % 3;
+        if (b == 0) {
+            return (int) Math.pow(3, a);
+        }
+        if (b == 1) {
+            return (int) (Math.pow(3, a - 1) * 4);
+        }
+        return (int) (Math.pow(3, a) * 2);
+    }
+
+    //动态规划
+    public int cuttingRope1(int n) {
+        int[] dp = new int[n + 1];
+        dp[2] = 1;
+        for (int i = 3; i < n + 1; i++) {
+            for (int j = 2; j < i; j++) {
+                dp[i] = Math.max(dp[i] % 1000000007, Math.max((j * (i - j)) % 1000000007, (j * dp[i - j])) % 1000000007);
+            }
+        }
+        return dp[n];
+    }
+
+    /**
+     * 剑指 Offer 18. 删除链表的节点
+     *
+     * @param head
+     * @param val
+     * @return
+     */
+    public static ListNode deleteNode(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+        if (head.val == val) {
+            return head.next;
+        }
+        ListNode temp = head;
+        while (temp.next != null) {
+            ListNode next = temp.next;
+            if (next.val == val) {
+                temp.next = next.next;
+                break;
+            }
+            temp = temp.next;
+        }
+        return head;
+    }
+
+    //双指针
+    public static ListNode deleteNode1(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+        if (head.val == val) {
+            return head.next;
+        }
+        ListNode pre = head, cur = head.next;
+        while (cur != null && cur.val != val) {
+            pre = pre.next;
+            cur = cur.next;
+        }
+        if (cur != null) {
+            pre.next = cur.next;
+        }
+        return head;
+    }
+
+    //单指针
+    public static ListNode deleteNode2(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+        if (head.val == val) {
+            return head.next;
+        }
+        ListNode cur = head;
+        while (cur.next!=null && cur.next.val!=val){
+            cur = cur.next;
+        }
+        if(cur.next!=null){
+            cur.next = cur.next.next;
+        }
+        return head;
+    }
+
+    /**
+     * 剑指 Offer 15. 二进制中1的个数
+     * @param n
+     * @return
+     */
+    public int hammingWeight(int n) {
         return -1;
     }
 }
