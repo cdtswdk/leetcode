@@ -1,3 +1,5 @@
+import sun.reflect.generics.tree.Tree;
+
 import java.util.*;
 
 /**
@@ -36,14 +38,21 @@ public class likou_jianzhioffer {
 
         /*System.out.println(movingCount1(3, 2, 17));*/
 
-        ListNode node1 = new ListNode(4);
+        /*ListNode node1 = new ListNode(4);
         ListNode node2 = new ListNode(5);
         ListNode node3 = new ListNode(1);
         ListNode node4 = new ListNode(9);
         node1.next = node2;
         node2.next = node3;
         node3.next = node4;
-        deleteNode(node1, 9);
+        deleteNode(node1, 9);*/
+
+        /*System.out.println(hammingWeight(00000000000000000000000000001011));*/
+
+        /*System.out.println(myPow(2.00000, -2147483648));*/
+
+        int[] nums = {5, 4, 3, 2, 1};
+        exchange(nums);
 
     }
 
@@ -588,22 +597,304 @@ public class likou_jianzhioffer {
             return head.next;
         }
         ListNode cur = head;
-        while (cur.next!=null && cur.next.val!=val){
+        while (cur.next != null && cur.next.val != val) {
             cur = cur.next;
         }
-        if(cur.next!=null){
+        if (cur.next != null) {
             cur.next = cur.next.next;
         }
         return head;
     }
 
     /**
-     * 剑指 Offer 15. 二进制中1的个数
+     * 剑指 Offer 15. 二进制中1的个数 you need to treat n as an unsigned value
+     *
      * @param n
      * @return
      */
-    public int hammingWeight(int n) {
-        return -1;
+    public static int hammingWeight(int n) {
+        return Integer.toBinaryString(n).replaceAll("0", "").length();
+    }
+
+    //按位与 1 & 0 = 0
+    public static int hammingWeight1(int n) {
+        int res = 0;
+        while (n != 0) {
+            res += n & 1;
+            n = n >>> 1;
+        }
+
+        return res;
+    }
+
+    //n & (n-1)
+    public static int hammingWeight2(int n) {
+        int res = 0;
+        while (n != 0) {
+            res += 1;
+            n = n & (n - 1);
+        }
+        return res;
+    }
+
+    /**
+     * 剑指 Offer 16. 数值的整数次方
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public static double myPow(double x, int n) {
+        if (x == 0) {
+            return 0;
+        }
+        double res = 1;
+        long b = n;
+        if (b < 0) {
+            x = 1 / x;
+            b = -b;
+        }
+        while (b > 0) {
+            if ((b & 1) == 1) {
+                res *= x;
+            }
+            x *= x;
+            b = b >> 1;
+        }
+        return res;
+    }
+
+    /**
+     * 剑指 Offer 17. 打印从1到最大的n位数
+     *
+     * @param n
+     * @return
+     */
+    public int[] printNumbers(int n) {
+        int[] res = new int[(int) Math.pow(10, n) - 1];
+
+        for (int i = 0; i < Math.pow(10, n) - 1; i++) {
+            res[i] = i + 1;
+        }
+        return res;
+    }
+
+    /**
+     * 剑指 Offer 32 - I. 从上到下打印二叉树
+     *
+     * @param root
+     * @return
+     */
+    public int[] levelOrder(TreeNode root) {
+        if (root == null) {
+            return new int[]{};
+        }
+        List<Integer> result = new ArrayList<>();
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.push(root);
+
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.pop();
+            result.add(node.val);
+            if (node.left != null) {
+                queue.add(node.left);
+            }
+            if (node.right != null) {
+                queue.add(node.right);
+            }
+        }
+        int[] res = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            res[i] = result.get(i);
+        }
+        return res;
+    }
+
+    /**
+     * 剑指 Offer 32 - II. 从上到下打印二叉树 II
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder1(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        List<List<Integer>> result = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            List<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.pop();
+                temp.add(node.val);
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+
+    /**
+     * 剑指 Offer 32 - III. 从上到下打印二叉树 III
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        int index = 0;
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            List<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.pop();
+                temp.add(node.val);
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            if (index % 2 == 1) {
+                Collections.reverse(temp);
+            }
+            result.add(temp);
+            index++;
+        }
+        return result;
+    }
+
+    //层序遍历 + 双端队列
+    public List<List<Integer>> levelOrder2_1(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        List<List<Integer>> result = new ArrayList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            LinkedList<Integer> temp = new LinkedList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.poll();
+                //偶数层加到队列的尾部
+                if (result.size() % 2 == 0) {
+                    temp.add(node.val);
+                } else {//奇数层加到队列的头部
+                    temp.addFirst(node.val);
+                }
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+
+    //层序遍历 + 双端队列（奇偶层逻辑分离）
+    public List<List<Integer>> levelOrder2_2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        List<List<Integer>> result = new ArrayList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            List<Integer> temp = new ArrayList<>();
+            //打印奇数层
+            for (int i = queue.size(); i > 0; i--) {
+                TreeNode node = queue.removeFirst();
+                temp.add(node.val);
+                //先左后右加入下层节点
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            result.add(temp);
+            if (queue.isEmpty()) {
+                break;
+            }
+            temp = new ArrayList<>();
+
+            for (int i = queue.size(); i > 0; i--) {
+                TreeNode node = queue.removeLast();
+                temp.add(node.val);
+                if (node.right != null) {
+                    queue.addFirst(node.right);
+                }
+                if (node.left != null) {
+                    queue.addFirst(node.left);
+                }
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+
+    /**
+     * 剑指 Offer 21. 调整数组顺序使奇数位于偶数前面
+     *
+     * @param nums
+     * @return
+     */
+    public static int[] exchange(int[] nums) {
+        if (nums.length == 0) {
+            return null;
+        }
+        int i = 0, j = nums.length - 1;
+        while (i <= j) {
+            if (nums[j] % 2 == 1) {
+                if (nums[i] % 2 == 0) {
+                    int temp = nums[i];
+                    nums[i] = nums[j];
+                    nums[j] = temp;
+                    j--;
+                } else {
+                    i++;
+                }
+            } else {
+                j--;
+            }
+        }
+        return nums;
+    }
+
+    //快慢指针
+    public static int[] exchange1(int[] nums) {
+        int low = 0, fast = 0;
+        while (fast < nums.length) {
+            if ((nums[fast] & 1) == 1) {
+                int temp = nums[low];
+                nums[low] = nums[fast];
+                nums[fast] = temp;
+                low++;
+            }
+            fast++;
+        }
+        return nums;
     }
 }
 
