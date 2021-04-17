@@ -51,8 +51,27 @@ public class likou_jianzhioffer {
 
         /*System.out.println(myPow(2.00000, -2147483648));*/
 
-        int[] nums = {5, 4, 3, 2, 1};
-        exchange(nums);
+        /*int[] nums = {5, 4, 3, 2, 1};
+        exchange(nums);*/
+
+        /*System.out.println(cuttingRope2_2(10));*/
+
+        ListNode node1 = new ListNode(1);
+        ListNode node2 = new ListNode(2);
+        ListNode node3 = new ListNode(3);
+        ListNode node4 = new ListNode(4);
+        ListNode node5 = new ListNode(5);
+        node1.next = node2;
+        node2.next = node3;
+        node3.next = node4;
+        node4.next = node5;
+        reverseList2(node1);
+
+        /*int[] nums = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
+        System.out.println(maxSubArray(nums));*/
+
+        /*int len = lengthOfLongestSubstring("abcabcbb");
+        System.out.println(len);*/
 
     }
 
@@ -532,7 +551,7 @@ public class likou_jianzhioffer {
     }
 
     //动态规划
-    public int cuttingRope1(int n) {
+    public int cuttingRope_1(int n) {
         int[] dp = new int[n + 1];
         dp[2] = 1;
         for (int i = 3; i < n + 1; i++) {
@@ -543,67 +562,77 @@ public class likou_jianzhioffer {
         return dp[n];
     }
 
+    //贪心
+    public int cuttingRope_2(int n) {
+        if (n < 4) {
+            return n - 1;
+        }
+        int res = 1;
+        while (n > 4) {
+            res *= 3;
+            n -= 3;
+        }
+        return res * n;
+    }
+
     /**
-     * 剑指 Offer 18. 删除链表的节点
+     * 剑指 Offer 14- II. 剪绳子 II
      *
-     * @param head
-     * @param val
+     * @param n
      * @return
      */
-    public static ListNode deleteNode(ListNode head, int val) {
-        if (head == null) {
-            return null;
+    public int cuttingRope2(int n) {
+        //贪心算法
+        if (n < 4) {
+            return n - 1;
         }
-        if (head.val == val) {
-            return head.next;
+        long res = 1;
+        while (n > 4) {
+            res = res * 3 % 1000000007;
+            n = n - 3;
         }
-        ListNode temp = head;
-        while (temp.next != null) {
-            ListNode next = temp.next;
-            if (next.val == val) {
-                temp.next = next.next;
-                break;
+        return (int) (res * n % 1000000007);
+    }
+
+    //快速幂求余
+    public static int cuttingRope2_1(int n) {
+        if (n < 4) {
+            return n - 1;
+        }
+        int b = n % 3, p = 1000000007;
+        long res = 1, x = 3;
+        for (int a = n / 3 - 1; a > 0; a /= 2) {
+            if (a % 2 == 1) {
+                res = (res * x) % p;
             }
-            temp = temp.next;
+            x = (x * x) % p;
         }
-        return head;
+        if (b == 0) {
+            return (int) ((res * 3) % p);
+        }
+        if (b == 1) {
+            return (int) ((res * 4) % p);
+        }
+        return (int) ((res * 6) % p);
     }
 
-    //双指针
-    public static ListNode deleteNode1(ListNode head, int val) {
-        if (head == null) {
-            return null;
+    //快速幂求余
+    public static int cuttingRope2_2(int n) {
+        if (n < 4) {
+            return n - 1;
         }
-        if (head.val == val) {
-            return head.next;
+        int b = n % 3, p = 1000000007;
+        long res = 1, x = 3;
+        for (int i = 1; i < n / 3; i++) {
+            res = (res * x) % p;
         }
-        ListNode pre = head, cur = head.next;
-        while (cur != null && cur.val != val) {
-            pre = pre.next;
-            cur = cur.next;
+        if (b == 0) {
+            return (int) ((res * 3) % p);
         }
-        if (cur != null) {
-            pre.next = cur.next;
+        if (b == 1) {
+            return (int) ((res * 4) % p);
         }
-        return head;
-    }
-
-    //单指针
-    public static ListNode deleteNode2(ListNode head, int val) {
-        if (head == null) {
-            return null;
-        }
-        if (head.val == val) {
-            return head.next;
-        }
-        ListNode cur = head;
-        while (cur.next != null && cur.next.val != val) {
-            cur = cur.next;
-        }
-        if (cur.next != null) {
-            cur.next = cur.next.next;
-        }
-        return head;
+        return (int) ((res * 6) % p);
     }
 
     /**
@@ -677,6 +706,196 @@ public class likou_jianzhioffer {
             res[i] = i + 1;
         }
         return res;
+    }
+
+    /**
+     * 剑指 Offer 18. 删除链表的节点
+     *
+     * @param head
+     * @param val
+     * @return
+     */
+    public static ListNode deleteNode(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+        if (head.val == val) {
+            return head.next;
+        }
+        ListNode temp = head;
+        while (temp.next != null) {
+            ListNode next = temp.next;
+            if (next.val == val) {
+                temp.next = next.next;
+                break;
+            }
+            temp = temp.next;
+        }
+        return head;
+    }
+
+    //双指针
+    public static ListNode deleteNode1(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+        if (head.val == val) {
+            return head.next;
+        }
+        ListNode pre = head, cur = head.next;
+        while (cur != null && cur.val != val) {
+            pre = pre.next;
+            cur = cur.next;
+        }
+        if (cur != null) {
+            pre.next = cur.next;
+        }
+        return head;
+    }
+
+    //单指针
+    public static ListNode deleteNode2(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+        if (head.val == val) {
+            return head.next;
+        }
+        ListNode cur = head;
+        while (cur.next != null && cur.next.val != val) {
+            cur = cur.next;
+        }
+        if (cur.next != null) {
+            cur.next = cur.next.next;
+        }
+        return head;
+    }
+
+    /**
+     * 剑指 Offer 21. 调整数组顺序使奇数位于偶数前面
+     *
+     * @param nums
+     * @return
+     */
+    public static int[] exchange(int[] nums) {
+        if (nums.length == 0) {
+            return null;
+        }
+        int i = 0, j = nums.length - 1;
+        while (i <= j) {
+            if (nums[j] % 2 == 1) {
+                if (nums[i] % 2 == 0) {
+                    int temp = nums[i];
+                    nums[i] = nums[j];
+                    nums[j] = temp;
+                    j--;
+                } else {
+                    i++;
+                }
+            } else {
+                j--;
+            }
+        }
+        return nums;
+    }
+
+    //快慢指针
+    public static int[] exchange1(int[] nums) {
+        int low = 0, fast = 0;
+        while (fast < nums.length) {
+            if ((nums[fast] & 1) == 1) {
+                int temp = nums[low];
+                nums[low] = nums[fast];
+                nums[fast] = temp;
+                low++;
+            }
+            fast++;
+        }
+        return nums;
+    }
+
+    /**
+     * 剑指 Offer 22. 链表中倒数第k个节点
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode getKthFromEnd(ListNode head, int k) {
+        ListNode first = head, second = head;
+        int m = k;
+        while (m > 0) {
+            if (first == null) {
+                return null;
+            }
+            first = first.next;
+            m--;
+        }
+        while (first != null) {
+            second = second.next;
+            first = first.next;
+        }
+        return second;
+    }
+
+    public ListNode getKthFromEnd1(ListNode head, int k) {
+        ListNode first = head, second = head;
+        int t = 0;
+        while (first != null) {
+            if (t >= k) {
+                second = second.next;
+            }
+            first = first.next;
+            t++;
+        }
+        if (t < k) {
+            return null;
+        }
+        return second;
+    }
+
+    /**
+     * 剑指 Offer 24. 反转链表
+     *
+     * @param head
+     * @return
+     */
+    public static ListNode reverseList(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode first = head;
+        ListNode second = first.next;
+        first.next = null;
+        while (second != null) {
+            ListNode temp = second.next;
+            second.next = first;
+            first = second;
+            second = temp;
+        }
+        return first;
+    }
+
+    public static ListNode reverseList1(ListNode head){
+        ListNode cur = head,pre = null;
+        while (cur!=null){
+            ListNode next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+
+    //递归
+    public static ListNode reverseList2(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode newHead = reverseList2(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
     }
 
     /**
@@ -855,46 +1074,70 @@ public class likou_jianzhioffer {
     }
 
     /**
-     * 剑指 Offer 21. 调整数组顺序使奇数位于偶数前面
+     * 剑指 Offer 42. 连续子数组的最大和
      *
      * @param nums
      * @return
      */
-    public static int[] exchange(int[] nums) {
-        if (nums.length == 0) {
-            return null;
+    public static int maxSubArray(int[] nums) {
+
+        int res = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            nums[i] += Math.max(nums[i - 1], 0);
+            res = Math.max(res, nums[i]);
         }
-        int i = 0, j = nums.length - 1;
-        while (i <= j) {
-            if (nums[j] % 2 == 1) {
-                if (nums[i] % 2 == 0) {
-                    int temp = nums[i];
-                    nums[i] = nums[j];
-                    nums[j] = temp;
-                    j--;
-                } else {
-                    i++;
-                }
-            } else {
-                j--;
-            }
-        }
-        return nums;
+        return res;
     }
 
-    //快慢指针
-    public static int[] exchange1(int[] nums) {
-        int low = 0, fast = 0;
-        while (fast < nums.length) {
-            if ((nums[fast] & 1) == 1) {
-                int temp = nums[low];
-                nums[low] = nums[fast];
-                nums[fast] = temp;
-                low++;
-            }
-            fast++;
+    /**
+     * 剑指 Offer 48. 最长不含重复字符的子字符串 动态规划 + 哈希表
+     *
+     * @param s
+     * @return
+     */
+    public static int lengthOfLongestSubstring(String s) {
+        if ("".equals(s) || s == null) {
+            return 0;
         }
-        return nums;
+        Map<Character, Integer> map = new HashMap<>();
+        int res = 0, tmp = 0;
+        for (int j = 0; j < s.length(); j++) {
+            Integer i = map.getOrDefault(s.charAt(j), -1);
+            map.put(s.charAt(j), j);
+            tmp = j - i > tmp ? tmp + 1 : j - i;
+            res = Math.max(res, tmp);
+        }
+        return res;
+    }
+
+    // 动态规划 + 线性遍历
+    public static int lengthOfLongestSubstring1(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int res = 0, tmp = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int j = i - 1;
+            while (j >= 0 && s.charAt(j) != s.charAt(i)) {
+                j--;
+            }
+            map.put(s.charAt(i), i);
+            tmp = tmp < j - i ? tmp + 1 : j - i;
+            res = Math.max(res, tmp);
+        }
+        return res;
+    }
+
+    // 双指针 + 哈希表
+    public static int lengthOfLongestSubstring2(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int i = -1, res = 0;
+        for (int j = 0; j < s.length(); j++) {
+            if(map.containsKey(s.charAt(j))){
+                i = Math.max(i,map.get(s.charAt(j)));
+            }
+            map.put(s.charAt(j),j);
+            res = Math.max(res,j - i);
+        }
+        return res;
     }
 }
 
