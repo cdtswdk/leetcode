@@ -352,24 +352,30 @@ public class likou_jianzhioffer_1 {
 
 class MinStack {
 
-    /** initialize your data structure here. */
-    public MinStack() {
+    private Stack<Integer> stack;
 
+    /**
+     * initialize your data structure here.
+     */
+    public MinStack() {
+        stack = new Stack<>();
     }
 
     public void push(int x) {
-
+        stack.push(x);
     }
 
     public void pop() {
-
+        stack.pop();
     }
 
     public int top() {
-        return -1;
+        return stack.peek();
     }
 
     public int min() {
+
+
         return -1;
     }
 }
