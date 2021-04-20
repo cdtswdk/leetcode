@@ -352,30 +352,35 @@ public class likou_jianzhioffer_1 {
 
 class MinStack {
 
-    private Stack<Integer> stack;
+    private Stack<Integer> stackA;
+    private Stack<Integer> stackB;
 
     /**
      * initialize your data structure here.
      */
     public MinStack() {
-        stack = new Stack<>();
+        stackA = new Stack<>();
+        stackB = new Stack<>();
     }
 
     public void push(int x) {
-        stack.push(x);
+        stackA.push(x);
+        if (stackB.isEmpty() || stackB.peek() >= x) {
+            stackB.push(x);
+        }
     }
 
     public void pop() {
-        stack.pop();
+        if (stackA.pop().equals(stackB.peek())) {
+            stackB.pop();
+        }
     }
 
     public int top() {
-        return stack.peek();
+        return stackA.peek();
     }
 
     public int min() {
-
-
-        return -1;
+        return stackB.peek();
     }
 }
