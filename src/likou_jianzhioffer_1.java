@@ -472,6 +472,76 @@ public class likou_jianzhioffer_1 {
         findPathSum(root.right, target, pathList, path, sum);
         path.remove(path.size() - 1);
     }
+
+    /**
+     * 剑指 Offer 35. 复杂链表的复制
+     *
+     * @param head
+     * @return
+     */
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Node cur = head;
+        //对链表节点的复制
+        while (cur != null) {
+            Node copyNode = new Node(cur.val);
+            copyNode.next = cur.next;
+            cur.next = copyNode;
+            cur = cur.next.next;
+        }
+        //对random指针的复制
+        cur = head;
+        while (cur != null) {
+            if (cur.random != null) {
+                cur.next.random = cur.random.next;
+            }
+            cur = cur.next.next;
+        }
+        /*Node copyHead = head.next, copyNode = head.next;
+        cur = head;
+        while (cur != null) {
+            cur.next = cur.next.next;
+            cur = cur.next;
+            if (copyNode.next != null) {
+                copyNode.next = copyNode.next.next;
+                copyNode = copyNode.next;
+            }
+        }
+        return copyHead;*/
+
+        Node pre = head, res = head.next;
+        cur = head.next;
+        while (cur.next != null) {
+            pre.next = pre.next.next;
+            cur.next = cur.next.next;
+            pre = pre.next;
+            cur = cur.next;
+        }
+        pre.next = null;
+        return res;
+    }
+
+    //哈希表
+    public Node copyRandomList1(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Map<Node, Node> map = new HashMap<>();
+        Node cur = head;
+        while (cur != null) {
+            map.put(cur, new Node(cur.val));
+            cur = cur.next;
+        }
+        cur = head;
+        while (cur != null) {
+            map.get(cur).next = map.get(cur.next);
+            map.get(cur).random = map.get(cur.random);
+            cur = cur.next;
+        }
+        return map.get(head);
+    }
 }
 
 /**
@@ -509,5 +579,20 @@ class MinStack {
 
     public int min() {
         return stackB.peek();
+    }
+}
+
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node() {
+    }
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
     }
 }
