@@ -53,12 +53,16 @@ public class likou_jianzhioffer_1 {
         System.out.println(isSymmetric(node1));*/
 
 //        int[][] matrix = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
-        int[][] matrix = {{7}, {9}, {6}};
+        /*int[][] matrix = {{7}, {9}, {6}};
         int[] spiralOrder = spiralOrder(matrix);
         for (int i : spiralOrder) {
             System.out.printf(i + " ");
-        }
+        }*/
 
+        int[] pushed = {1, 2, 3, 4, 5};
+        int[] popped = {4, 5, 3, 2, 1};
+//        int[] popped = {4, 3, 5, 1, 2};
+        System.out.println(validateStackSequences(pushed, popped));
     }
 
     /**
@@ -348,8 +352,43 @@ public class likou_jianzhioffer_1 {
         }
         return res;
     }
+
+    /**
+     * 剑指 Offer 31. 栈的压入、弹出序列
+     *
+     * @param pushed
+     * @param popped
+     * @return
+     */
+    public static boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> stack = new Stack<>();
+        int i = 0;
+        for (int num : pushed) {
+            stack.push(num);
+            while (!stack.isEmpty() && stack.peek() == popped[i]){
+                stack.pop();
+                i++;
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    /**
+     * 剑指 Offer 33. 二叉搜索树的后序遍历序列
+     * @param postorder
+     * @return
+     */
+    public boolean verifyPostorder(int[] postorder) {
+        if(postorder == null || postorder.length == 0){
+            return false;
+        }
+        return true;
+    }
 }
 
+/**
+ * 剑指 Offer 30. 包含min函数的栈
+ */
 class MinStack {
 
     private Stack<Integer> stackA;
