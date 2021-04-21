@@ -1,5 +1,3 @@
-import sun.reflect.generics.tree.Tree;
-
 import java.util.*;
 
 /**
@@ -59,10 +57,35 @@ public class likou_jianzhioffer_1 {
             System.out.printf(i + " ");
         }*/
 
-        int[] pushed = {1, 2, 3, 4, 5};
+        /*int[] pushed = {1, 2, 3, 4, 5};
         int[] popped = {4, 5, 3, 2, 1};
 //        int[] popped = {4, 3, 5, 1, 2};
-        System.out.println(validateStackSequences(pushed, popped));
+        System.out.println(validateStackSequences(pushed, popped));*/
+
+        /*int[] nums = {1, 3, 2, 6, 5};
+        verifyPostorder(nums);*/
+
+        TreeNode node1 = new TreeNode(5);
+        TreeNode node2 = new TreeNode(4);
+        TreeNode node3 = new TreeNode(8);
+        TreeNode node4 = new TreeNode(11);
+        TreeNode node5 = new TreeNode(13);
+        TreeNode node6 = new TreeNode(4);
+        TreeNode node7 = new TreeNode(7);
+        TreeNode node8 = new TreeNode(2);
+        TreeNode node9 = new TreeNode(5);
+        TreeNode node10 = new TreeNode(1);
+        node1.left = node2;
+        node1.right = node3;
+        node2.left = node4;
+        node4.left = node7;
+        node4.right = node8;
+        node3.left = node5;
+        node3.right = node6;
+        node6.left = node9;
+        node6.right = node10;
+
+        pathSum(node1, 22);
     }
 
     /**
@@ -365,7 +388,7 @@ public class likou_jianzhioffer_1 {
         int i = 0;
         for (int num : pushed) {
             stack.push(num);
-            while (!stack.isEmpty() && stack.peek() == popped[i]){
+            while (!stack.isEmpty() && stack.peek() == popped[i]) {
                 stack.pop();
                 i++;
             }
@@ -375,14 +398,79 @@ public class likou_jianzhioffer_1 {
 
     /**
      * 剑指 Offer 33. 二叉搜索树的后序遍历序列
+     *
      * @param postorder
      * @return
      */
-    public boolean verifyPostorder(int[] postorder) {
-        if(postorder == null || postorder.length == 0){
-            return false;
+    public static boolean verifyPostorder(int[] postorder) {
+        return recur(postorder, 0, postorder.length - 1);
+    }
+
+    private static boolean recur(int[] postorder, int i, int j) {
+        if (i >= j) {
+            return true;
+        }
+        int p = i;
+        while (postorder[p] < postorder[j]) {
+            p++;
+        }
+        int m = p;
+        while (postorder[p] > postorder[j]) {
+            p++;
+        }
+        return p == j && recur(postorder, i, m - 1) && recur(postorder, m, j - 1);
+    }
+
+    //辅助栈
+    public static boolean verifyPostorder1(int[] postorder) {
+        Stack<Integer> stack = new Stack<>();
+        int root = Integer.MAX_VALUE;
+        for (int i = postorder.length - 1; i >= 0; i--) {
+            if (postorder[i] > root) {
+                return false;
+            }
+            while (!stack.isEmpty() && stack.peek() > postorder[i]) {
+                root = stack.pop();
+            }
+            stack.push(postorder[i]);
         }
         return true;
+    }
+
+    /**
+     * 剑指 Offer 34. 二叉树中和为某一值的路径
+     *
+     * @param root
+     * @param target
+     * @return
+     */
+    public static List<List<Integer>> pathSum(TreeNode root, int target) {
+        List<List<Integer>> pathList = new ArrayList<>();
+
+        int sum = 0;
+        List<Integer> path = new ArrayList<>();
+        findPathSum(root, target, pathList, path, sum);
+        for (List<Integer> list : pathList) {
+            for (Integer num : list) {
+                System.out.println(num);
+            }
+        }
+        return pathList;
+    }
+
+    private static void findPathSum(TreeNode root, int target, List<List<Integer>> pathList, List<Integer> path, int sum) {
+        if (root == null) {
+            return;
+        }
+        int val = root.val;
+        sum += val;
+        path.add(root.val);
+        if (sum == target && root.left == null && root.right == null) {
+            pathList.add(new ArrayList<>(path));
+        }
+        findPathSum(root.left, target, pathList, path, sum);
+        findPathSum(root.right, target, pathList, path, sum);
+        path.remove(path.size() - 1);
     }
 }
 
