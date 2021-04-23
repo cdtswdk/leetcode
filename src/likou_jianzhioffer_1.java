@@ -84,7 +84,6 @@ public class likou_jianzhioffer_1 {
         node3.right = node6;
         node6.left = node9;
         node6.right = node10;
-
         pathSum(node1, 22);
     }
 
@@ -397,6 +396,181 @@ public class likou_jianzhioffer_1 {
     }
 
     /**
+     * 剑指 Offer 32 - I. 从上到下打印二叉树
+     *
+     * @param root
+     * @return
+     */
+    public int[] levelOrder(TreeNode root) {
+        if (root == null) {
+            return new int[]{};
+        }
+        List<Integer> result = new ArrayList<>();
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.push(root);
+
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.pop();
+            result.add(node.val);
+            if (node.left != null) {
+                queue.add(node.left);
+            }
+            if (node.right != null) {
+                queue.add(node.right);
+            }
+        }
+        int[] res = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            res[i] = result.get(i);
+        }
+        return res;
+    }
+
+    /**
+     * 剑指 Offer 32 - II. 从上到下打印二叉树 II
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder1(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        List<List<Integer>> result = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            List<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.pop();
+                temp.add(node.val);
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+
+    /**
+     * 剑指 Offer 32 - III. 从上到下打印二叉树 III
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        int index = 0;
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            List<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.pop();
+                temp.add(node.val);
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            if (index % 2 == 1) {
+                Collections.reverse(temp);
+            }
+            result.add(temp);
+            index++;
+        }
+        return result;
+    }
+
+    //层序遍历 + 双端队列
+    public List<List<Integer>> levelOrder2_1(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        List<List<Integer>> result = new ArrayList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            LinkedList<Integer> temp = new LinkedList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.poll();
+                //偶数层加到队列的尾部
+                if (result.size() % 2 == 0) {
+                    temp.add(node.val);
+                } else {//奇数层加到队列的头部
+                    temp.addFirst(node.val);
+                }
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+
+    //层序遍历 + 双端队列（奇偶层逻辑分离）
+    public List<List<Integer>> levelOrder2_2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        List<List<Integer>> result = new ArrayList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            List<Integer> temp = new ArrayList<>();
+            //打印奇数层
+            for (int i = queue.size(); i > 0; i--) {
+                TreeNode node = queue.removeFirst();
+                temp.add(node.val);
+                //先左后右加入下层节点
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            result.add(temp);
+            if (queue.isEmpty()) {
+                break;
+            }
+            temp = new ArrayList<>();
+
+            for (int i = queue.size(); i > 0; i--) {
+                TreeNode node = queue.removeLast();
+                temp.add(node.val);
+                if (node.right != null) {
+                    queue.addFirst(node.right);
+                }
+                if (node.left != null) {
+                    queue.addFirst(node.left);
+                }
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+
+    /**
      * 剑指 Offer 33. 二叉搜索树的后序遍历序列
      *
      * @param postorder
@@ -541,6 +715,15 @@ public class likou_jianzhioffer_1 {
             cur = cur.next;
         }
         return map.get(head);
+    }
+
+    /**
+     * 剑指 Offer 36. 二叉搜索树与双向链表
+     * @param root
+     * @return
+     */
+    public Node treeToDoublyList(Node root) {
+        return null;
     }
 }
 

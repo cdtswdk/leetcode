@@ -56,7 +56,7 @@ public class likou_jianzhioffer {
 
         /*System.out.println(cuttingRope2_2(10));*/
 
-        ListNode node1 = new ListNode(1);
+        /*ListNode node1 = new ListNode(1);
         ListNode node2 = new ListNode(2);
         ListNode node3 = new ListNode(3);
         ListNode node4 = new ListNode(4);
@@ -65,13 +65,16 @@ public class likou_jianzhioffer {
         node2.next = node3;
         node3.next = node4;
         node4.next = node5;
-        reverseList2(node1);
+        reverseList2(node1);*/
 
         /*int[] nums = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
         System.out.println(maxSubArray(nums));*/
 
         /*int len = lengthOfLongestSubstring("abcabcbb");
         System.out.println(len);*/
+
+        String s = "aab", p = "c*a*b*";
+        System.out.println(isMatch1(s, p));
 
     }
 
@@ -772,6 +775,86 @@ public class likou_jianzhioffer {
     }
 
     /**
+     * 剑指 Offer 19. 正则表达式匹配
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public static boolean isMatch(String s, String p) {
+        int n = s.length();
+        int m = p.length();
+        boolean[][] dp = new boolean[n + 1][m + 1];
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                //空正则
+                if (j == 0) {
+                    dp[i][j] = i == 0;
+                } else {
+                    //非空正则，分为两种情况
+                    //最后一个字符为非*
+                    if (p.charAt(j - 1) != '*') {
+                        if (i > 0 && (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.')) {
+                            dp[i][j] = dp[i - 1][j - 1];
+                        }
+                    } else {
+                        //最后一个字符为*，分为看和不看
+                        //看
+                        if (j >= 2) {
+                            dp[i][j] |= dp[i][j - 2];
+                        }
+                        //不看
+                        if (i >= 1 && j >= 2 && (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.')) {
+                            dp[i][j] |= dp[i - 1][j];
+                        }
+                    }
+                }
+            }
+        }
+        return dp[n][m];
+    }
+
+    //递归
+    public static boolean isMatch1(String s, String p) {
+        if (s.length() == 0) {
+            if (p.length() % 2 != 0) {
+                return false;
+            }
+            int i = 1;
+            while (i < p.length()) {
+                if (p.charAt(i) != '*') {
+                    return false;
+                }
+                i += 2;
+            }
+            return true;
+        }
+        //字符串长度不为0，但是匹配串长度为0，直接返回false
+        if (p.length() == 0) {
+            return false;
+        }
+        char c1 = s.charAt(0), c2 = p.charAt(0), c3 = 'a';
+        if (p.length() > 1) {
+            c3 = p.charAt(1);
+        }
+        //分为后一位是不是'*'的情况
+        if (c3 != '*') {
+            if (c1 == c2 || c2 == '.') {
+                return isMatch1(s.substring(1), p.substring(1));
+            } else {
+                return false;
+            }
+        } else {
+            if (c1 == c2 || c2 == '.') {
+                return isMatch1(s.substring(1), p) || isMatch1(s, p.substring(2));
+            } else {
+                return isMatch1(s, p.substring(2));
+            }
+        }
+    }
+
+    /**
      * 剑指 Offer 21. 调整数组顺序使奇数位于偶数前面
      *
      * @param nums
@@ -876,9 +959,9 @@ public class likou_jianzhioffer {
         return first;
     }
 
-    public static ListNode reverseList1(ListNode head){
-        ListNode cur = head,pre = null;
-        while (cur!=null){
+    public static ListNode reverseList1(ListNode head) {
+        ListNode cur = head, pre = null;
+        while (cur != null) {
             ListNode next = cur.next;
             cur.next = pre;
             pre = cur;
@@ -896,248 +979,6 @@ public class likou_jianzhioffer {
         head.next.next = head;
         head.next = null;
         return newHead;
-    }
-
-    /**
-     * 剑指 Offer 32 - I. 从上到下打印二叉树
-     *
-     * @param root
-     * @return
-     */
-    public int[] levelOrder(TreeNode root) {
-        if (root == null) {
-            return new int[]{};
-        }
-        List<Integer> result = new ArrayList<>();
-        Deque<TreeNode> queue = new ArrayDeque<>();
-        queue.push(root);
-
-        while (!queue.isEmpty()) {
-            TreeNode node = queue.pop();
-            result.add(node.val);
-            if (node.left != null) {
-                queue.add(node.left);
-            }
-            if (node.right != null) {
-                queue.add(node.right);
-            }
-        }
-        int[] res = new int[result.size()];
-        for (int i = 0; i < result.size(); i++) {
-            res[i] = result.get(i);
-        }
-        return res;
-    }
-
-    /**
-     * 剑指 Offer 32 - II. 从上到下打印二叉树 II
-     *
-     * @param root
-     * @return
-     */
-    public List<List<Integer>> levelOrder1(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
-        }
-
-        Deque<TreeNode> queue = new ArrayDeque<>();
-        queue.add(root);
-        List<List<Integer>> result = new ArrayList<>();
-        while (!queue.isEmpty()) {
-            int n = queue.size();
-            List<Integer> temp = new ArrayList<>();
-            for (int i = 0; i < n; i++) {
-                TreeNode node = queue.pop();
-                temp.add(node.val);
-                if (node.left != null) {
-                    queue.add(node.left);
-                }
-                if (node.right != null) {
-                    queue.add(node.right);
-                }
-            }
-            result.add(temp);
-        }
-        return result;
-    }
-
-    /**
-     * 剑指 Offer 32 - III. 从上到下打印二叉树 III
-     *
-     * @param root
-     * @return
-     */
-    public List<List<Integer>> levelOrder2(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
-        }
-        Deque<TreeNode> queue = new ArrayDeque<>();
-        queue.add(root);
-
-        List<List<Integer>> result = new ArrayList<>();
-
-        int index = 0;
-        while (!queue.isEmpty()) {
-            int n = queue.size();
-            List<Integer> temp = new ArrayList<>();
-            for (int i = 0; i < n; i++) {
-                TreeNode node = queue.pop();
-                temp.add(node.val);
-                if (node.left != null) {
-                    queue.add(node.left);
-                }
-                if (node.right != null) {
-                    queue.add(node.right);
-                }
-            }
-            if (index % 2 == 1) {
-                Collections.reverse(temp);
-            }
-            result.add(temp);
-            index++;
-        }
-        return result;
-    }
-
-    //层序遍历 + 双端队列
-    public List<List<Integer>> levelOrder2_1(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
-        }
-        Deque<TreeNode> queue = new ArrayDeque<>();
-        List<List<Integer>> result = new ArrayList<>();
-        queue.add(root);
-        while (!queue.isEmpty()) {
-            int n = queue.size();
-            LinkedList<Integer> temp = new LinkedList<>();
-            for (int i = 0; i < n; i++) {
-                TreeNode node = queue.poll();
-                //偶数层加到队列的尾部
-                if (result.size() % 2 == 0) {
-                    temp.add(node.val);
-                } else {//奇数层加到队列的头部
-                    temp.addFirst(node.val);
-                }
-                if (node.left != null) {
-                    queue.add(node.left);
-                }
-                if (node.right != null) {
-                    queue.add(node.right);
-                }
-            }
-            result.add(temp);
-        }
-        return result;
-    }
-
-    //层序遍历 + 双端队列（奇偶层逻辑分离）
-    public List<List<Integer>> levelOrder2_2(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
-        }
-        Deque<TreeNode> queue = new ArrayDeque<>();
-        List<List<Integer>> result = new ArrayList<>();
-        queue.add(root);
-        while (!queue.isEmpty()) {
-            List<Integer> temp = new ArrayList<>();
-            //打印奇数层
-            for (int i = queue.size(); i > 0; i--) {
-                TreeNode node = queue.removeFirst();
-                temp.add(node.val);
-                //先左后右加入下层节点
-                if (node.left != null) {
-                    queue.add(node.left);
-                }
-                if (node.right != null) {
-                    queue.add(node.right);
-                }
-            }
-            result.add(temp);
-            if (queue.isEmpty()) {
-                break;
-            }
-            temp = new ArrayList<>();
-
-            for (int i = queue.size(); i > 0; i--) {
-                TreeNode node = queue.removeLast();
-                temp.add(node.val);
-                if (node.right != null) {
-                    queue.addFirst(node.right);
-                }
-                if (node.left != null) {
-                    queue.addFirst(node.left);
-                }
-            }
-            result.add(temp);
-        }
-        return result;
-    }
-
-    /**
-     * 剑指 Offer 42. 连续子数组的最大和
-     *
-     * @param nums
-     * @return
-     */
-    public static int maxSubArray(int[] nums) {
-
-        int res = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            nums[i] += Math.max(nums[i - 1], 0);
-            res = Math.max(res, nums[i]);
-        }
-        return res;
-    }
-
-    /**
-     * 剑指 Offer 48. 最长不含重复字符的子字符串 动态规划 + 哈希表
-     *
-     * @param s
-     * @return
-     */
-    public static int lengthOfLongestSubstring(String s) {
-        if ("".equals(s) || s == null) {
-            return 0;
-        }
-        Map<Character, Integer> map = new HashMap<>();
-        int res = 0, tmp = 0;
-        for (int j = 0; j < s.length(); j++) {
-            Integer i = map.getOrDefault(s.charAt(j), -1);
-            map.put(s.charAt(j), j);
-            tmp = j - i > tmp ? tmp + 1 : j - i;
-            res = Math.max(res, tmp);
-        }
-        return res;
-    }
-
-    // 动态规划 + 线性遍历
-    public static int lengthOfLongestSubstring1(String s) {
-        Map<Character, Integer> map = new HashMap<>();
-        int res = 0, tmp = 0;
-        for (int i = 0; i < s.length(); i++) {
-            int j = i - 1;
-            while (j >= 0 && s.charAt(j) != s.charAt(i)) {
-                j--;
-            }
-            map.put(s.charAt(i), i);
-            tmp = tmp < j - i ? tmp + 1 : j - i;
-            res = Math.max(res, tmp);
-        }
-        return res;
-    }
-
-    // 双指针 + 哈希表
-    public static int lengthOfLongestSubstring2(String s) {
-        Map<Character, Integer> map = new HashMap<>();
-        int i = -1, res = 0;
-        for (int j = 0; j < s.length(); j++) {
-            if(map.containsKey(s.charAt(j))){
-                i = Math.max(i,map.get(s.charAt(j)));
-            }
-            map.put(s.charAt(j),j);
-            res = Math.max(res,j - i);
-        }
-        return res;
     }
 }
 
