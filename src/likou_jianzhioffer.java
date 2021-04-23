@@ -73,8 +73,11 @@ public class likou_jianzhioffer {
         /*int len = lengthOfLongestSubstring("abcabcbb");
         System.out.println(len);*/
 
-        String s = "aab", p = "c*a*b*";
-        System.out.println(isMatch1(s, p));
+        /*String s = "aab", p = "c*a*b*";
+        System.out.println(isMatch1(s, p));*/
+
+        String s = "1e9";
+        System.out.println(isNumber(s));
 
     }
 
@@ -813,6 +816,110 @@ public class likou_jianzhioffer {
             }
         }
         return dp[n][m];
+    }
+
+    /**
+     * 剑指 Offer 20. 表示数值的字符串
+     *
+     * @param s
+     * @return
+     */
+    public static boolean isNumber(String s) {
+
+        if (s.length() == 0) {
+            return false;
+        }
+
+        //去掉首尾空格
+        s = s.trim();
+        //转换为字符数组
+        char[] chs = s.toCharArray();
+        boolean numFlag = false;
+        boolean dotFlag = false;
+        boolean eFlag = false;
+
+        for (int i = 0; i < chs.length; i++) {
+            char ch = chs[i];
+            if (ch >= '0' && ch <= '9') {
+                numFlag = true;
+            } else if (ch == '.' && !dotFlag && !eFlag) {
+                dotFlag = true;
+            } else if (i != 0 && (ch == 'e' || ch == 'E') && !eFlag && numFlag) {
+                eFlag = true;
+                numFlag = false;
+            } else if ((ch == '+' || ch == '-') && (i == 0 || chs[i - 1] == 'e' || chs[i - 1] == 'E')) {
+
+            } else {
+                return false;
+            }
+        }
+
+        return numFlag;
+    }
+
+    //状态转移
+    public static boolean isNumber1(String s) {
+        Map[] states = {
+                new HashMap<Character,Integer>() {{
+                    put(' ', 0);
+                    put('s', 1);
+                    put('d', 2);
+                    put('.', 4);
+                }}, // 0.
+                new HashMap<Character,Integer>() {{
+                    put('d', 2);
+                    put('.', 4);
+                }}, // 1.
+                new HashMap<Character,Integer>() {{
+                    put('d', 2);
+                    put('.', 3);
+                    put('e', 5);
+                    put(' ', 8);
+                }}, // 2.
+                new HashMap<Character,Integer>() {{
+                    put('d', 3);
+                    put('e', 5);
+                    put(' ', 8);
+                }}, // 3.
+                new HashMap<Character,Integer>() {{
+                    put('d', 3);
+                }}, // 4.
+                new HashMap<Character,Integer>() {{
+                    put('s', 6);
+                    put('d', 7);
+                }}, // 5.
+                new HashMap<Character,Integer>() {{
+                    put('d', 7);
+                }}, // 6.
+                new HashMap<Character,Integer>() {{
+                    put('d', 7);
+                    put(' ', 8);
+                }}, // 7.
+                new HashMap<Character,Integer>() {{
+                    put(' ', 8);
+                }} // 8.
+        };
+        //初始状态为0
+        int p = 0;
+        char t;
+        for (char c : s.toCharArray()) {
+            if (c >= '0' && c <= '9') {
+                t = 'd';
+            } else if (c == '+' || c == '-') {
+                t = 's';
+            } else if (c == 'e' || c == 'E') {
+                t = 'e';
+            } else if (c == '.' || c == ' ') {
+                t = c;
+            } else {
+                t = '?';
+            }
+            if (!states[p].containsKey(t)) {
+                return false;
+            }
+            p = (int) states[p].get(t);
+        }
+        return p == 2 || p == 3 || p == 7 || p == 8;
     }
 
     //递归

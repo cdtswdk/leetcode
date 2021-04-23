@@ -1,3 +1,4 @@
+import java.nio.IntBuffer;
 import java.util.*;
 
 /**
@@ -6,6 +7,9 @@ import java.util.*;
  * @Description:
  */
 public class likou_jianzhioffer_1 {
+
+    TreeNode pre, head;
+
     public static void main(String[] args) {
         /*ListNode node1 = new ListNode(1);
         ListNode node2 = new ListNode(2);
@@ -65,7 +69,7 @@ public class likou_jianzhioffer_1 {
         /*int[] nums = {1, 3, 2, 6, 5};
         verifyPostorder(nums);*/
 
-        TreeNode node1 = new TreeNode(5);
+        /*TreeNode node1 = new TreeNode(5);
         TreeNode node2 = new TreeNode(4);
         TreeNode node3 = new TreeNode(8);
         TreeNode node4 = new TreeNode(11);
@@ -84,7 +88,19 @@ public class likou_jianzhioffer_1 {
         node3.right = node6;
         node6.left = node9;
         node6.right = node10;
-        pathSum(node1, 22);
+        pathSum(node1, 22);*/
+
+        TreeNode node1 = new TreeNode(1);
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3);
+        TreeNode node4 = new TreeNode(4);
+        TreeNode node5 = new TreeNode(5);
+        node1.left = node2;
+        node1.right = node3;
+        node3.left = node4;
+        node3.right = node5;
+        Codec codec = new Codec();
+        System.out.println(codec.serialize(node1));
     }
 
     /**
@@ -719,11 +735,33 @@ public class likou_jianzhioffer_1 {
 
     /**
      * 剑指 Offer 36. 二叉搜索树与双向链表
+     *
      * @param root
      * @return
      */
-    public Node treeToDoublyList(Node root) {
-        return null;
+    public TreeNode treeToDoublyList(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        head.left = pre;
+        pre.right = head;
+
+        return head;
+    }
+
+    private void recur(TreeNode cur) {
+        if (cur == null) {
+            return;
+        }
+        recur(cur.left);
+        if (pre != null) {
+            pre.right = cur;
+        } else {
+            head = cur;
+        }
+        cur.left = pre;
+        pre = cur;
+        recur(cur.right);
     }
 }
 
@@ -777,5 +815,43 @@ class Node {
         this.val = val;
         this.next = null;
         this.random = null;
+    }
+}
+
+/**
+ * 剑指 Offer 37. 序列化二叉树
+ */
+class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            builder.append(node.val);
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+            if (node.left == null) {
+                builder.append("null");
+            }
+            if (node.right == null) {
+                builder.append("null");
+            }
+        }
+        return builder.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        return null;
     }
 }
