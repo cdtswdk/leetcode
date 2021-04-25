@@ -1,4 +1,3 @@
-import java.nio.IntBuffer;
 import java.util.*;
 
 /**
@@ -90,7 +89,7 @@ public class likou_jianzhioffer_1 {
         node6.right = node10;
         pathSum(node1, 22);*/
 
-        /*TreeNode node1 = new TreeNode(1);
+        TreeNode node1 = new TreeNode(1);
         TreeNode node2 = new TreeNode(2);
         TreeNode node3 = new TreeNode(3);
         TreeNode node4 = new TreeNode(4);
@@ -100,19 +99,7 @@ public class likou_jianzhioffer_1 {
         node3.left = node4;
         node3.right = node5;
         Codec codec = new Codec();
-        System.out.println(codec.serialize(node1));*/
-
-        int a = 1;
-        int b = 2;
-
-        try {
-            a = 3;           //A
-            b = 1 / 0;       //B
-        } catch (Exception e) {
-
-        } finally {
-            System.out.println("a = " + a);
-        }
+        System.out.println(codec.serialize(node1));
     }
 
     /**
@@ -775,6 +762,17 @@ public class likou_jianzhioffer_1 {
         pre = cur;
         recur(cur.right);
     }
+
+    /**
+     * 剑指 Offer 38. 字符串的排列
+     *
+     * @param s
+     * @return
+     */
+    public String[] permutation(String s) {
+        String[] str = new String[]{};
+        return str;
+    }
 }
 
 /**
@@ -838,25 +836,26 @@ class Codec {
     // Encodes a tree to a single string.
     public String serialize(TreeNode root) {
         if (root == null) {
-            return null;
+            return "";
         }
         StringBuilder builder = new StringBuilder();
         Deque<TreeNode> queue = new ArrayDeque<>();
         queue.offer(root);
+        builder.append(root.val);
         while (!queue.isEmpty()) {
             TreeNode node = queue.poll();
-            builder.append(node.val);
+
             if (node.left != null) {
+                builder.append(",").append(node.left.val);
                 queue.offer(node.left);
+            } else {
+                builder.append(",null");
             }
             if (node.right != null) {
+                builder.append(",").append(node.right.val);
                 queue.offer(node.right);
-            }
-            if (node.left == null) {
-                builder.append("null");
-            }
-            if (node.right == null) {
-                builder.append("null");
+            } else {
+                builder.append(",null");
             }
         }
         return builder.toString();
@@ -864,6 +863,32 @@ class Codec {
 
     // Decodes your encoded data to tree.
     public TreeNode deserialize(String data) {
-        return null;
+        String[] values = data.split("\\s");
+        int index = 0;
+        TreeNode head = generateNodeByString(values[index++]);
+        Queue<TreeNode> queue = new LinkedList<>();
+        if (head != null) {
+            queue.offer(head);
+        }
+        TreeNode node = null;
+        while (!queue.isEmpty()) {
+            node = queue.poll();
+            node.left = generateNodeByString(values[index++]);
+            node.right = generateNodeByString(values[index++]);
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+        return head;
+    }
+
+    private TreeNode generateNodeByString(String value) {
+        if ("null".equals(value) || "".equals(value)) {
+            return null;
+        }
+        return new TreeNode(Integer.parseInt(value));
     }
 }
