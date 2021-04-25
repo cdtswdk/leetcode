@@ -90,7 +90,7 @@ public class likou_jianzhioffer_1 {
         node6.right = node10;
         pathSum(node1, 22);*/
 
-        TreeNode node1 = new TreeNode(1);
+        /*TreeNode node1 = new TreeNode(1);
         TreeNode node2 = new TreeNode(2);
         TreeNode node3 = new TreeNode(3);
         TreeNode node4 = new TreeNode(4);
@@ -100,7 +100,19 @@ public class likou_jianzhioffer_1 {
         node3.left = node4;
         node3.right = node5;
         Codec codec = new Codec();
-        System.out.println(codec.serialize(node1));
+        System.out.println(codec.serialize(node1));*/
+
+        int a = 1;
+        int b = 2;
+
+        try {
+            a = 3;           //A
+            b = 1 / 0;       //B
+        } catch (Exception e) {
+
+        } finally {
+            System.out.println("a = " + a);
+        }
     }
 
     /**
