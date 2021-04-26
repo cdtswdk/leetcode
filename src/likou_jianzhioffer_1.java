@@ -9,6 +9,9 @@ public class likou_jianzhioffer_1 {
 
     TreeNode pre, head;
 
+    private static char[] c;
+    private static List<String> res = new LinkedList<>();
+
     public static void main(String[] args) {
         /*ListNode node1 = new ListNode(1);
         ListNode node2 = new ListNode(2);
@@ -89,7 +92,7 @@ public class likou_jianzhioffer_1 {
         node6.right = node10;
         pathSum(node1, 22);*/
 
-        TreeNode node1 = new TreeNode(1);
+        /*TreeNode node1 = new TreeNode(1);
         TreeNode node2 = new TreeNode(2);
         TreeNode node3 = new TreeNode(3);
         TreeNode node4 = new TreeNode(4);
@@ -99,7 +102,10 @@ public class likou_jianzhioffer_1 {
         node3.left = node4;
         node3.right = node5;
         Codec codec = new Codec();
-        System.out.println(codec.serialize(node1));
+        System.out.println(codec.serialize(node1));*/
+
+        String str = "abb";
+        System.out.println(Arrays.toString(permutation(str)));
     }
 
     /**
@@ -769,9 +775,35 @@ public class likou_jianzhioffer_1 {
      * @param s
      * @return
      */
-    public String[] permutation(String s) {
-        String[] str = new String[]{};
-        return str;
+    public static String[] permutation(String s) {
+
+        c = s.toCharArray();
+        dfs(0);
+
+        return res.toArray(new String[res.size()]);
+    }
+
+    private static void dfs(int x) {
+        if (x == c.length - 1) {
+            res.add(String.valueOf(c));
+            return;
+        }
+        HashSet<Character> set = new HashSet<>();
+        for (int i = x; i < c.length; i++) {
+            if (set.contains(c[i])) {
+                continue;
+            }
+            set.add(c[i]);
+            swap(i, x);
+            dfs(x + 1);
+            swap(i, x);
+        }
+    }
+
+    private static void swap(int i, int x) {
+        char temp = c[i];
+        c[i] = c[x];
+        c[x] = temp;
     }
 }
 

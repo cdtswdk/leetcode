@@ -1,3 +1,5 @@
+import javafx.collections.transformation.SortedList;
+
 import java.util.*;
 
 /**
@@ -10,8 +12,28 @@ public class likou_jianzhioffer_2 {
         /*int[] nums = {1, 2, 3, 2, 2, 2, 5, 4, 2};
         System.out.println(majorityElement(nums));*/
 
-        int[] sortArray = {1, 3, 5, 4, 2};
-        System.out.println(Arrays.toString(quickSort(sortArray, 0, sortArray.length - 1)));
+        /*int[] sortArray = {1, 3, 5, 4, 2};
+        System.out.println(Arrays.toString(quickSort(sortArray, 0, sortArray.length - 1)));*/
+
+        /*MedianFinder medianFinder = new MedianFinder();
+        medianFinder.addNum(1);
+        medianFinder.addNum(3);
+        System.out.println(medianFinder.findMedian());
+        medianFinder.addNum(2);
+        medianFinder.addNum(5);
+        System.out.println(medianFinder.findMedian());*/
+
+        MedianFinder1 medianFinder = new MedianFinder1();
+        medianFinder.addNum(5);
+        medianFinder.addNum(2);
+        System.out.println(medianFinder.findMedian());
+        medianFinder.addNum(4);
+        medianFinder.addNum(3);
+        System.out.println(medianFinder.findMedian());
+        medianFinder.addNum(1);
+        medianFinder.addNum(6);
+        System.out.println(medianFinder.findMedian());
+
     }
 
     /**
@@ -186,6 +208,31 @@ public class likou_jianzhioffer_2 {
     }
 
     /**
+     * 剑指 Offer 43. 1～n 整数中 1 出现的次数
+     *
+     * @param n
+     * @return
+     */
+    public int countDigitOne(int n) {
+        int digit = 1, res = 0;
+        int high = n / 10, cur = n % 10, low = 0;
+        while (high != 0 || cur != 0) {
+            if (cur == 0) {
+                res += high * digit;
+            } else if (cur == 1) {
+                res += high * digit + low + 1;
+            } else {
+                res += (high + 1) * digit;
+            }
+            low += cur * digit;
+            cur = high % 10;
+            high /= 10;
+            digit *= 10;
+        }
+        return res;
+    }
+
+    /**
      * 剑指 Offer 48. 最长不含重复字符的子字符串 动态规划 + 哈希表
      *
      * @param s
@@ -236,3 +283,67 @@ public class likou_jianzhioffer_2 {
         return res;
     }
 }
+
+/**
+ * 剑指 Offer 41. 数据流中的中位数
+ */
+class MedianFinder {
+
+    private List<Integer> list;
+
+    /**
+     * initialize your data structure here.
+     */
+    public MedianFinder() {
+        list = new ArrayList<>();
+    }
+
+    public void addNum(int num) {
+        list.add(num);
+    }
+
+    public double findMedian() {
+        list.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1 - o2;
+            }
+        });
+        double median;
+        if (list.size() % 2 == 0) {
+            median = ((double) list.get(list.size() / 2) + (double) list.get(list.size() / 2 - 1)) / 2;
+        } else {
+            median = list.get(list.size() / 2);
+        }
+        return median;
+    }
+}
+
+//小顶堆存储较大的一半，大顶堆存储较小的一半
+class MedianFinder1 {
+
+    private Queue<Integer> queue1, queue2;
+
+    /**
+     * initialize your data structure here.
+     */
+    public MedianFinder1() {
+        queue1 = new PriorityQueue<>();
+        queue2 = new PriorityQueue<>((x, y) -> (y - x));
+    }
+
+    public void addNum(int num) {
+        if (queue1.size() != queue2.size()) {
+            queue1.offer(num);
+            queue2.offer(queue1.poll());
+        } else {
+            queue2.offer(num);
+            queue1.offer(queue2.poll());
+        }
+    }
+
+    public double findMedian() {
+        return queue1.size() == queue2.size() ? (queue1.peek() + queue2.peek()) / 2.0 : queue1.peek();
+    }
+}
+
