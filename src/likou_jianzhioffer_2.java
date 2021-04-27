@@ -233,6 +233,27 @@ public class likou_jianzhioffer_2 {
     }
 
     /**
+     * 剑指 Offer 44. 数字序列中某一位的数字
+     *
+     * @param n
+     * @return
+     */
+    public int findNthDigit(int n) {
+        int digit = 1;
+        long start = 1;
+        long count = 9;
+        while (n > count) {
+            n -= count;
+            start *= 10;
+            digit += 1;
+            count = digit * start * 9;
+        }
+        long num = start + (n - 1) / digit;
+        return Long.toString(num).charAt((n - 1) % digit) - '0';
+
+    }
+
+    /**
      * 剑指 Offer 48. 最长不含重复字符的子字符串 动态规划 + 哈希表
      *
      * @param s
