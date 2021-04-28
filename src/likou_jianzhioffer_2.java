@@ -8,6 +8,8 @@ import java.util.*;
  * @Description:
  */
 public class likou_jianzhioffer_2 {
+    private static int maxValue = 0;
+
     public static void main(String[] args) {
         /*int[] nums = {1, 2, 3, 2, 2, 2, 5, 4, 2};
         System.out.println(majorityElement(nums));*/
@@ -37,7 +39,11 @@ public class likou_jianzhioffer_2 {
         /*int[] nums = {34, 3, 30, 9, 5, 8, 6, 2};
         System.out.println(minNumber(nums));*/
 
-        System.out.println(translateNum1(12258));
+        /*System.out.println(translateNum1(12258));*/
+
+        int[][] grid = {{1, 3, 1}, {1, 5, 1}, {4, 2, 1}};
+//        int[][] grid = {{0, 0}, {0, 0}};
+        System.out.println(maxValue1(grid));
 
     }
 
@@ -387,11 +393,97 @@ public class likou_jianzhioffer_2 {
 
     /**
      * 剑指 Offer 47. 礼物的最大价值
+     *
      * @param grid
      * @return
      */
-    public int maxValue(int[][] grid) {
-        return -1;
+    public static int maxValue(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        dfs(grid, m, n, 0, 0, 0);
+        return maxValue;
+    }
+
+    private static int dfs(int[][] grid, int m, int n, int r, int c, int curValue) {
+        if (!inArea(grid, r, c)) {
+            return curValue;
+        }
+        curValue += grid[r][c];
+        if (r == m - 1 && c == n - 1) {
+            maxValue = Math.max(curValue, maxValue);
+            return maxValue;
+        }
+        dfs(grid, m, n, r + 1, c, curValue);
+        dfs(grid, m, n, r, c + 1, curValue);
+        return maxValue;
+    }
+
+    private static boolean inArea(int[][] grid, int r2, int c2) {
+        return r2 >= 0 && r2 < grid.length &&
+                c2 >= 0 && c2 < grid[0].length;
+    }
+
+    //递归
+    public static int maxValue_1(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        return helper(grid, grid.length - 1, grid[0].length - 1, new HashMap<>());
+    }
+
+    private static int helper(int[][] grid, int i, int j, HashMap<String, Integer> map) {
+        if (i < 0 || j < 0) {
+            return 0;
+        }
+        String key = i + "*" + j;
+        int res = map.getOrDefault(key, -1);
+        if (res != -1) {
+            return res;
+        }
+        res = Math.max(helper(grid, i - 1, j, map), helper(grid, i, j - 1, map)) + grid[i][j];
+        map.put(key, res);
+        return res;
+    }
+
+    //动态规划
+    public static int maxValue1(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) {
+                    continue;
+                }
+                if (i == 0) {
+                    grid[i][j] += grid[i][j - 1];
+                } else if (j == 0) {
+                    grid[i][j] += grid[i - 1][j];
+                } else {
+                    grid[i][j] += Math.max(grid[i - 1][j], grid[i][j - 1]);
+                }
+            }
+        }
+        return grid[m - 1][n - 1];
+    }
+
+    //动态规划-优化
+    public static int maxValue2(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        //初始化第一列
+        for (int i = 1; i < m; i++) {
+            grid[i][0] += grid[i - 1][0];
+        }
+        //初始化第一行
+        for (int i = 1; i < n; i++) {
+            grid[0][i] += grid[0][i - 1];
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                grid[i][j] += Math.max(grid[i - 1][j], grid[i][j - 1]);
+            }
+        }
+        return grid[m - 1][n - 1];
     }
 
     private static void quickSort(String[] strs, int left, int right) {
