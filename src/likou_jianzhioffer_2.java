@@ -1,4 +1,4 @@
-import javafx.collections.transformation.SortedList;
+
 
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class likou_jianzhioffer_2 {
         medianFinder.addNum(5);
         System.out.println(medianFinder.findMedian());*/
 
-        MedianFinder1 medianFinder = new MedianFinder1();
+        /*MedianFinder1 medianFinder = new MedianFinder1();
         medianFinder.addNum(5);
         medianFinder.addNum(2);
         System.out.println(medianFinder.findMedian());
@@ -32,7 +32,12 @@ public class likou_jianzhioffer_2 {
         System.out.println(medianFinder.findMedian());
         medianFinder.addNum(1);
         medianFinder.addNum(6);
-        System.out.println(medianFinder.findMedian());
+        System.out.println(medianFinder.findMedian());*/
+
+        /*int[] nums = {34, 3, 30, 9, 5, 8, 6, 2};
+        System.out.println(minNumber(nums));*/
+
+        System.out.println(translateNum1(12258));
 
     }
 
@@ -251,6 +256,165 @@ public class likou_jianzhioffer_2 {
         long num = start + (n - 1) / digit;
         return Long.toString(num).charAt((n - 1) % digit) - '0';
 
+    }
+
+    /**
+     * 剑指 Offer 45. 把数组排成最小的数
+     *
+     * @param nums
+     * @return
+     */
+    public static String minNumber(int[] nums) {
+        String[] strs = new String[nums.length];
+        for (int i = 0; i < strs.length; i++) {
+            strs[i] = String.valueOf(nums[i]);
+        }
+        quickSort(strs, 0, nums.length - 1);
+        StringBuilder res = new StringBuilder();
+        for (String str : strs) {
+            res.append(str);
+        }
+        return res.toString();
+    }
+
+    //内置函数
+    public static String minNumber1(int[] nums) {
+        String[] strs = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            strs[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(strs, (x, y) -> (x + y).compareTo(y + x));
+        StringBuilder res = new StringBuilder();
+        for (String str : strs) {
+            res.append(str);
+        }
+        return res.toString();
+    }
+
+    /**
+     * 剑指 Offer 46. 把数字翻译成字符串
+     *
+     * @param num
+     * @return
+     */
+    public static int translateNum(int num) {
+        String str = String.valueOf(num);
+        if (str.length() == 1) {
+            return 1;
+        }
+        int[] dp = new int[32];
+        dp[0] = 1;
+        dp[1] = ((str.charAt(0) - '0') < 3 && (str.charAt(1) - '0') < 6)
+                || ((str.charAt(0) - '0') < 2 && (str.charAt(1) - '0') <= 9) ? 2 : dp[0];
+        for (int i = 2; i < str.length(); i++) {
+            if ((str.charAt(i - 1) - '0') < 3 && str.charAt(i - 1) - '0' != 0 && (str.charAt(i) - '0') < 6 ||
+                    (str.charAt(i - 1) - '0') < 2 && str.charAt(i - 1) - '0' != 0 && (str.charAt(i) - '0') <= 9) {
+                dp[i] = dp[i - 1] + dp[i - 2];
+            } else {
+                dp[i] = dp[i - 1];
+            }
+        }
+        return dp[str.length() - 1];
+    }
+
+    //dp数组改进
+    public static int translateNum_1(int num) {
+        String str = String.valueOf(num);
+        if (str.length() == 1) {
+            return 1;
+        }
+        int[] dp = new int[str.length() + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= str.length(); i++) {
+            String tmp = str.substring(i - 2, i);
+            if (tmp.compareTo("10") >= 0 && tmp.compareTo("25") <= 0) {
+                dp[i] = dp[i - 1] + dp[i - 2];
+            } else {
+                dp[i] = dp[i - 1];
+            }
+        }
+        return dp[str.length()];
+    }
+
+    //滚动变量-1
+    public static int translateNum1(int num) {
+        String str = String.valueOf(num);
+        int p = 0, q = 0, r = 1;
+        for (int i = 0; i < str.length(); i++) {
+            p = q;
+            q = r;
+            r = 0;
+            r += q;
+            if (i == 0) {
+                continue;
+            }
+            String tmp = str.substring(i - 1, i + 1);
+            if (tmp.compareTo("10") >= 0 && tmp.compareTo("25") <= 0) {
+                r += p;
+            }
+        }
+        return r;
+    }
+
+    //滚动变量-2
+    public static int translateNum2(int num) {
+        String str = String.valueOf(num);
+        int b = 1, a = 1;
+        for (int i = 2; i <= str.length(); i++) {
+            String tmp = str.substring(i - 2, i);
+            int c = tmp.compareTo("10") >= 0 && tmp.compareTo("25") <= 0 ? a + b : a;
+            b = a;
+            a = c;
+        }
+        return a;
+    }
+
+    //数字求余
+    public static int translateNum3(int num) {
+        int a = 1, b = 1, x, y = num % 10;
+        while (num != 0) {
+            num /= 10;
+            x = num % 10;
+            int tmp = 10 * x + y;
+            int c = tmp >= 10 && tmp <= 25 ? a + b : a;
+            b = a;
+            a = c;
+            y = x;
+        }
+        return a;
+    }
+
+    /**
+     * 剑指 Offer 47. 礼物的最大价值
+     * @param grid
+     * @return
+     */
+    public int maxValue(int[][] grid) {
+        return -1;
+    }
+
+    private static void quickSort(String[] strs, int left, int right) {
+        if (left >= right) {
+            return;
+        }
+        int i = left, j = right;
+        String tmp = strs[i];
+        while (i < j) {
+            while ((strs[j] + strs[left]).compareTo(strs[left] + strs[j]) >= 0 && i < j) {
+                j--;
+            }
+            while ((strs[i] + strs[left]).compareTo(strs[left] + strs[i]) <= 0 && i < j) {
+                i++;
+            }
+            tmp = strs[i];
+            strs[i] = strs[j];
+            strs[j] = tmp;
+        }
+        strs[i] = strs[left];
+        strs[left] = tmp;
+        quickSort(strs, left, i - 1);
+        quickSort(strs, i + 1, right);
     }
 
     /**
