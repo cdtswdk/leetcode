@@ -1,6 +1,4 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * @Auther: chendongtao
@@ -58,11 +56,55 @@ public class likou_jianzhioffer_3 {
         if (s.length() == 0) {
             return ' ';
         }
-        int index = 0;
-        HashMap<Character,Integer> map = new HashMap<>();
-        for(int i = 0;i<s.length();i++){
-
+        int[] target = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            target[s.charAt(i) - 'a']++;
         }
-        return s.charAt(index);
+        for (int i = 0; i < s.length(); i++) {
+            if (target[s.charAt(i) - 'a'] == 1) {
+                return s.charAt(i);
+            }
+        }
+        return ' ';
+    }
+
+    //哈希表
+    public static char firstUniqChar1(String s) {
+        HashMap<Character, Boolean> map = new HashMap<>();
+        char[] chs = s.toCharArray();
+        for (char ch : chs) {
+            map.put(ch, !map.containsKey(ch));
+        }
+        for (char ch : chs) {
+            if (map.get(ch)) {
+                return ch;
+            }
+        }
+        return ' ';
+    }
+
+    //有序哈希表
+    public static char firstUniqChar2(String s) {
+        Map<Character, Boolean> map = new LinkedHashMap<>();
+        char[] chs = s.toCharArray();
+        for (char ch : chs) {
+            map.put(ch, !map.containsKey(ch));
+        }
+        for (Map.Entry<Character, Boolean> entry : map.entrySet()) {
+            if (entry.getValue()) {
+                return entry.getKey();
+            }
+        }
+        return ' ';
+    }
+
+    /**
+     * 剑指 Offer 51. 数组中的逆序对
+     *
+     * @param nums
+     * @return
+     */
+    public int reversePairs(int[] nums) {
+        return -1;
     }
 }
