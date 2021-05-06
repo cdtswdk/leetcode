@@ -25,8 +25,8 @@ public class likou_array {
         /*int[] nums = {1, 0, -1, 0, -2, 2};
         System.out.println(fourSum1(nums, 0));*/
 
-        int[] nums = {1, 0, 1, 1, 1};
-        System.out.println(searchArray(nums, 0));
+        /*int[] nums = {1, 0, 1, 1, 1};
+        System.out.println(searchArray(nums, 0));*/
         /*int[] nums = {2, 2};
         int[] searchRange = searchRange(nums, 2);
         for (int i : searchRange) {
@@ -38,6 +38,9 @@ public class likou_array {
 
         /*int[] nums = {5, 7, 7, 8, 8, 10};
         System.out.println(Arrays.toString(searchRange1(nums, 8)));*/
+        int[] nums = {5, 7, 7, 8, 8, 10};
+        System.out.println(Arrays.toString(searchRange2(nums, 8)));
+
     }
 
     /**
@@ -873,6 +876,28 @@ public class likou_array {
                 right = mid - 1;
             } else {
                 left = mid;
+            }
+        }
+        return left;
+    }
+
+    public static int[] searchRange2(int[] nums, int target) {
+        int leftIndex = searchrange(nums, target);
+        int rightIndex = searchrange(nums, target + 1);
+
+        if (leftIndex == nums.length || nums[leftIndex] != target) {
+            return new int[]{-1, -1};
+        }
+        return new int[]{leftIndex, rightIndex - 1};
+    }
+    private static int searchrange(int[] nums, int target) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid;
             }
         }
         return left;
