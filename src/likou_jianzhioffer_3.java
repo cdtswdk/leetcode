@@ -7,6 +7,8 @@ import java.util.*;
  */
 public class likou_jianzhioffer_3 {
     private static int[] nums, tmp;
+    private static int value, count;
+    private static int depth;
 
     public static void main(String[] args) {
         /*String str = "aabbc";
@@ -52,8 +54,21 @@ public class likou_jianzhioffer_3 {
         /*int[] nums = {5, 6, 8, 8, 8, 10};
         System.out.println(search1(nums, 8));*/
 
-        int[] nums = {0, 1, 2, 3, 4, 5, 6, 7, 9};
-        System.out.println(missingNumber1(nums));
+        /*int[] nums = {0, 1, 2, 3, 4, 5, 6, 7, 9};
+        System.out.println(missingNumber1(nums));*/
+
+        TreeNode node1 = new TreeNode(5);
+        TreeNode node2 = new TreeNode(3);
+        TreeNode node3 = new TreeNode(6);
+        TreeNode node4 = new TreeNode(2);
+        TreeNode node5 = new TreeNode(4);
+        TreeNode node6 = new TreeNode(1);
+        node1.left = node2;
+        node1.right = node3;
+        node2.left = node4;
+        node4.left = node6;
+        node2.right = node5;
+        System.out.println(kthLargest(node1, 3));
     }
 
     /**
@@ -340,7 +355,237 @@ public class likou_jianzhioffer_3 {
      * @param k
      * @return
      */
-    public int kthLargest(TreeNode root, int k) {
+    public static int kthLargest(TreeNode root, int k) {
+        findKthLargest(root, k);
+        return value;
+    }
+
+    public static void findKthLargest(TreeNode root, int k) {
+        if (root == null) {
+            return;
+        }
+        findKthLargest(root.right, k);
+        if (count == k) {
+            return;
+        }
+        if (++count == k) {
+            value = root.val;
+        }
+        findKthLargest(root.left, k);
+    }
+
+    /**
+     * 剑指 Offer 55 - I. 二叉树的深度
+     *
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+    }
+
+    //层序遍历BFS
+    public int maxDepth1(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        Queue<TreeNode> queue = new LinkedList<>() {{
+            add(root);
+        }};
+        int res = 0;
+        while (!queue.isEmpty()) {
+            res++;
+            int n = queue.size();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 剑指 Offer 55 - II. 平衡二叉树
+     *
+     * @param root
+     * @return
+     */
+    public boolean isBalanced(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return Math.abs(getTreeDepth(root.left) - getTreeDepth(root.right)) <= 1 && isBalanced(root.left) && isBalanced(root.right);
+    }
+
+
+    private int getTreeDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(getTreeDepth(root.left), getTreeDepth(root.right)) + 1;
+    }
+
+    //先序遍历+剪枝
+    public boolean isBalanced1(TreeNode root) {
+        return recur(root) != -1;
+    }
+
+    private int recur(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = recur(root.left);
+        if (left == -1) {
+            return -1;
+        }
+        int right = recur(root.right);
+        if (right == -1) {
+            return -1;
+        }
+        return Math.abs(left - right) < 2 ? Math.max(left, right) + 1 : -1;
+    }
+
+    /**
+     * 剑指 Offer 56 - I. 数组中数字出现的次数
+     *
+     * @param nums
+     * @return
+     */
+    public int[] singleNumbers(int[] nums) {
+        if (nums.length == 2) {
+            return nums;
+        }
+        int[] res = new int[2];
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            int count = map.getOrDefault(num, 0);
+            map.put(num, ++count);
+        }
+        int index = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == 1) {
+                res[index++] = entry.getKey();
+            }
+        }
+        return res;
+    }
+
+    //异或
+    public int[] singleNumbers1(int[] nums) {
+        int x = 0, y = 0, n = 0, m = 1;
+        for (int num : nums) {
+            n ^= num;
+        }
+        while ((n & m) == 0) {
+            m <<= 1;
+        }
+        for (int num : nums) {
+            if ((num & m) == 0) {
+                x ^= num;
+            } else {
+                y ^= num;
+            }
+        }
+        return new int[]{x, y};
+    }
+
+    /**
+     * 剑指 Offer 56 - II. 数组中数字出现的次数 II
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumber(int[] nums) {
+        if (nums.length == 1) {
+            return 1;
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            Integer count = map.getOrDefault(num, 0);
+            map.put(num, ++count);
+        }
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == 1) {
+                return entry.getKey();
+            }
+        }
         return -1;
+    }
+
+    //遍历统计
+    public int singleNumber1(int[] nums) {
+        int[] count = new int[32];
+        for (int num : nums) {
+            for (int i = 0; i < 32; i++) {
+                count[i] += num & 1;
+                num >>= 1;
+            }
+        }
+        int res = 0, m = 3;
+        for (int i = 0; i < 32; i++) {
+            res <<= 1;
+            res |= count[31 - i] % 3;
+        }
+        return res;
+    }
+
+    //有限状态自动机
+    public int singleNumber2(int[] nums) {
+        int ones = 0, twos = 0;
+        for (int num : nums) {
+            ones = ones ^ num & ~twos;
+            twos = twos ^ num & ~ones;
+        }
+        return ones;
+    }
+
+    /**
+     * 剑指 Offer 57. 和为s的两个数字
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] nums, int target) {
+        for (int i = 0; i < nums.length - 1; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[]{nums[i], nums[j]};
+                }
+            }
+        }
+        return new int[]{};
+    }
+
+    //双指针
+    public int[] twoSum1(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
+            int sum = nums[left] + nums[right];
+            if (sum == target) {
+                return new int[]{nums[left], nums[right]};
+            } else if (sum > target) {
+                right--;
+            } else {
+                left++;
+            }
+        }
+        return new int[]{};
+    }
+
+    /**
+     * 剑指 Offer 57 - II. 和为s的连续正数序列
+     *
+     * @param target
+     * @return
+     */
+    public int[][] findContinuousSequence(int target) {
+        return null;
     }
 }
