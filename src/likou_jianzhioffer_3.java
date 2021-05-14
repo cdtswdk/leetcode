@@ -57,7 +57,7 @@ public class likou_jianzhioffer_3 {
         /*int[] nums = {0, 1, 2, 3, 4, 5, 6, 7, 9};
         System.out.println(missingNumber1(nums));*/
 
-        TreeNode node1 = new TreeNode(5);
+        /*TreeNode node1 = new TreeNode(5);
         TreeNode node2 = new TreeNode(3);
         TreeNode node3 = new TreeNode(6);
         TreeNode node4 = new TreeNode(2);
@@ -68,7 +68,12 @@ public class likou_jianzhioffer_3 {
         node2.left = node4;
         node4.left = node6;
         node2.right = node5;
-        System.out.println(kthLargest(node1, 3));
+        System.out.println(kthLargest(node1, 3));*/
+
+//        System.out.println(Arrays.deepToString(findContinuousSequence(15)));
+
+//        System.out.println(reverseWords("  ab   bc cd"));
+        System.out.println(reverseLeftWords("abcdefg", 3));
     }
 
     /**
@@ -585,7 +590,174 @@ public class likou_jianzhioffer_3 {
      * @param target
      * @return
      */
-    public int[][] findContinuousSequence(int target) {
-        return null;
+    public static int[][] findContinuousSequence(int target) {
+        List<int[]> list = new ArrayList<>();
+        for (int l = 1, r = 1, sum = 0; r < target; r++) {
+            sum += r;
+            while (sum > target) {
+                sum -= l++;
+            }
+            if (sum == target) {
+                int[] temp = new int[r - l + 1];
+                for (int i = 0; i < temp.length; i++) {
+                    temp[i] = l + i;
+                }
+                list.add(temp);
+            }
+        }
+        return list.toArray(new int[0][]);
+    }
+
+    //使用公式
+    public static int[][] findContinuousSequence1(int target) {
+        int i = 1;
+        double j = 2.0;
+        List<int[]> list = new ArrayList<>();
+        while (i < j) {
+            j = (-1 + Math.sqrt(1 + 4 * (2 * target + (long) i * i - i))) / 2;
+            if (i < j && j == (int) j) {
+                int[] temp = new int[(int) j - i + 1];
+                for (int k = i; k <= (int) j; k++) {
+                    temp[k - i] = k;
+                }
+                list.add(temp);
+            }
+            i++;
+        }
+        return list.toArray(new int[0][]);
+    }
+
+    //枚举+暴力
+    public static int[][] findContinuousSequence2(int target) {
+        List<int[]> list = new ArrayList<>();
+        int limit = (target - 1) / 2;
+        int sum = 0;
+        for (int i = 1; i <= limit; i++) {
+            for (int j = i; ; j++) {
+                sum += j;
+                if (sum > target) {
+                    sum = 0;
+                    break;
+                } else if (sum == target) {
+                    int[] temp = new int[j - i + 1];
+                    for (int k = i; k <= j; k++) {
+                        temp[k - i] = k;
+                    }
+                    list.add(temp);
+                    sum = 0;
+                    break;
+                }
+            }
+        }
+        return list.toArray(new int[0][]);
+    }
+
+    //枚举+数学优化
+    public static int[][] findContinuousSequence3(int target) {
+        List<int[]> list = new ArrayList<>();
+        int limit = (target - 1) / 2;
+        for (int x = 1; x <= limit; x++) {
+            long delta = 1 - 4 * (x - (long) x * x - 2 * target);
+            if (delta < 0) {
+                continue;
+            }
+            int delta_sqrt = (int) Math.sqrt(delta + 0.5);
+            if ((long) delta_sqrt * delta_sqrt == delta && (delta_sqrt - 1) % 2 == 0) {
+                int y = (-1 + delta_sqrt) / 2;
+                if (x < y) {
+                    int[] temp = new int[y - x + 1];
+                    for (int i = x; i <= y; i++) {
+                        temp[i - x] = i;
+                    }
+                    list.add(temp);
+                }
+            }
+        }
+        return list.toArray(new int[list.size()][]);
+    }
+
+    //双指针
+    public static int[][] findContinuousSequence4(int target) {
+        List<int[]> list = new ArrayList<>();
+        for (int l = 1, r = 2; l < r; ) {
+            int sum = (l + r) * (r - l + 1) / 2;
+            if (sum == target) {
+                int[] temp = new int[r - l + 1];
+                for (int i = l; i <= r; i++) {
+                    temp[i - l] = i;
+                }
+                list.add(temp);
+                l++;
+            } else if (sum < target) {
+                r++;
+            } else {
+                l++;
+            }
+        }
+        return list.toArray(new int[0][]);
+    }
+
+    //剑指 Offer 58 - I. 翻转单词顺序
+    public static String reverseWords(String s) {
+        String[] split = s.trim().split("\\s+");
+        Collections.reverse(Arrays.asList(split));
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < split.length; i++) {
+            res.append(split[i]).append(" ");
+        }
+        return res.toString().trim();
+    }
+
+    //双指针
+    public static String reverseWords1(String s) {
+        s = s.trim();
+        int j = s.length() - 1, i = j;
+        StringBuilder res = new StringBuilder();
+        while (i >= 0) {
+            //找到首个空格
+            while (i >= 0 && s.charAt(i) != ' ') i--;
+            //拼接单词
+            res.append(s.substring(i + 1, j + 1)).append(" ");
+            //跳过单词间空格
+            while (i >= 0 && s.charAt(i) == ' ') i--;
+            //j指向下一个单词的尾字符
+            j = i;
+        }
+        return res.toString().trim();
+    }
+
+    //剑指 Offer 58 - II. 左旋转字符串
+    public static String reverseLeftWords(String s, int n) {
+        if (n >= s.length()) {
+            return s;
+        }
+        return s.substring(n) + s.substring(0, n);
+    }
+
+    //列表遍历拼接
+    public static String reverseLeftWords1(String s, int n) {
+        StringBuilder res = new StringBuilder();
+        for (int i = n; i < n + s.length(); i++) {
+            res.append(s.charAt(i % s.length()));
+        }
+        return res.toString();
+    }
+
+    //字符串遍历拼接
+    public static String reverseLeftWords2(String s, int n) {
+        String res = "";
+        for (int i = n; i < n + s.length(); i++) {
+            res += s.charAt(i % s.length());
+        }
+        return res;
+    }
+
+    //剑指 Offer 59 - I. 滑动窗口的最大值
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        List<Integer> res = new ArrayList<>();
+        for (int l = 1, r = 1; r < nums.length; r++) {
+
+        }
+        return res.stream().mapToInt(Integer::intValue).toArray();
     }
 }
