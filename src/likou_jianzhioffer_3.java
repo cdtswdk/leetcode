@@ -73,7 +73,10 @@ public class likou_jianzhioffer_3 {
 //        System.out.println(Arrays.deepToString(findContinuousSequence(15)));
 
 //        System.out.println(reverseWords("  ab   bc cd"));
-        System.out.println(reverseLeftWords("abcdefg", 3));
+//        System.out.println(reverseLeftWords("abcdefg", 3));
+
+        int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
+        System.out.println(Arrays.toString(maxSlidingWindow(nums, 3)));
     }
 
     /**
@@ -753,11 +756,102 @@ public class likou_jianzhioffer_3 {
     }
 
     //剑指 Offer 59 - I. 滑动窗口的最大值
-    public int[] maxSlidingWindow(int[] nums, int k) {
+    public static int[] maxSlidingWindow(int[] nums, int k) {
         List<Integer> res = new ArrayList<>();
-        for (int l = 1, r = 1; r < nums.length; r++) {
-
+        int maxValue = Integer.MIN_VALUE;
+        Queue<Integer> queue = new LinkedList<>();
+        for (int l = 0, r = 0; r < nums.length; r++) {
+            if (r - l < k) {
+                queue.offer(nums[r]);
+            } else if (r - l == k) {
+                Iterator<Integer> iterator = queue.iterator();
+                while (iterator.hasNext()) {
+                    maxValue = Math.max(maxValue, iterator.next());
+                }
+                res.add(maxValue);
+                maxValue = Integer.MIN_VALUE;
+                queue.poll();
+                queue.offer(nums[r]);
+                l++;
+            }
+        }
+        //加入最后一个窗口的最大值
+        Iterator<Integer> iterator = queue.iterator();
+        while (iterator.hasNext()) {
+            maxValue = Math.max(maxValue, iterator.next());
+        }
+        if (maxValue != Integer.MIN_VALUE) {
+            res.add(maxValue);
         }
         return res.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    //双端队列
+    public static int[] maxSlidingWindow1(int[] nums, int k) {
+        if (nums.length == 0 || k == 0) {
+            return new int[0];
+        }
+        int[] res = new int[nums.length - k + 1];
+        Deque<Integer> deque = new LinkedList<>();
+        for (int j = 0, i = 1 - k; j < nums.length; i++, j++) {
+            if (i > 0 && deque.peekFirst() == nums[i - 1]) {
+                deque.removeFirst();
+            }
+            while (!deque.isEmpty() && deque.peekLast() < nums[j]) {
+                deque.removeLast();
+            }
+            deque.addLast(nums[j]);
+            if (i >= 0) {
+                res[i] = deque.peekFirst();
+            }
+        }
+        return res;
+    }
+
+    //双端队列 未形成窗口 -> 已形成窗口
+    public static int[] maxSlidingWindow2(int[] nums, int k) {
+        if (nums.length == 0 || k == 0) return new int[0];
+        Deque<Integer> deque = new LinkedList<>();
+        int[] res = new int[nums.length - k + 1];
+
+        //未形成窗口
+        for (int i = 0; i < k; i++) {
+            while (!deque.isEmpty() && deque.peekLast() < nums[i]) {
+                deque.removeLast();
+            }
+            deque.addLast(nums[i]);
+        }
+        res[0] = deque.peekFirst();
+        //已形成窗口
+        for (int i = k; i < nums.length; i++) {
+            if (deque.peekFirst() == nums[i - k]) {
+                deque.removeFirst();
+            }
+            while (!deque.isEmpty() && deque.peekLast() < nums[i]) {
+                deque.removeLast();
+            }
+            deque.addLast(nums[i]);
+            res[i - k + 1] = deque.peekFirst();
+        }
+        return res;
+    }
+}
+
+class MaxQueue {
+
+    public MaxQueue() {
+
+    }
+
+    public int max_value() {
+        return -1;
+    }
+
+    public void push_back(int value) {
+
+    }
+
+    public int pop_front() {
+        return -1;
     }
 }
