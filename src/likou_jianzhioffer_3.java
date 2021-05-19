@@ -1045,6 +1045,34 @@ public class likou_jianzhioffer_3 {
         boolean x = n > 1 && (n += sumNums1(n - 1)) > 0;
         return n;
     }
+
+    /**
+     * 剑指 Offer 65. 不用加减乘除做加法
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public int add(int a, int b) {
+        while (b != 0) {
+            int c = (a & b) << 1;
+            a ^= b;
+            b = c;
+        }
+        return a;
+    }
+
+    /**
+     * 剑指 Offer 66. 构建乘积数组
+     *
+     * @param a
+     * @return
+     */
+    public int[] constructArr(int[] a) {
+        int[] res = new int[a.length];
+
+        return res;
+    }
 }
 
 /**
