@@ -1,3 +1,4 @@
+import java.rmi.MarshalException;
 import java.util.*;
 
 /**
@@ -75,8 +76,19 @@ public class likou_jianzhioffer_3 {
 //        System.out.println(reverseWords("  ab   bc cd"));
 //        System.out.println(reverseLeftWords("abcdefg", 3));
 
-        int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
-        System.out.println(Arrays.toString(maxSlidingWindow(nums, 3)));
+        /*int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
+        System.out.println(Arrays.toString(maxSlidingWindow(nums, 3)));*/
+
+        MaxQueue maxQueue = new MaxQueue();
+        System.out.println(maxQueue.max_value());
+        System.out.println(maxQueue.pop_front());
+        System.out.println(maxQueue.pop_front());
+        maxQueue.push_back(94);
+        maxQueue.push_back(16);
+        maxQueue.push_back(89);
+        System.out.println(maxQueue.pop_front());
+        maxQueue.push_back(22);
+        System.out.println(maxQueue.pop_front());
     }
 
     /**
@@ -835,23 +847,242 @@ public class likou_jianzhioffer_3 {
         }
         return res;
     }
+
+    /**
+     * 剑指 Offer 60. n个骰子的点数
+     *
+     * @param n
+     * @return
+     */
+    public double[] dicesProbability(int n) {
+        double[] dp = new double[6];
+        Arrays.fill(dp, 1.0 / 6.0);
+        for (int i = 2; i <= n; i++) {
+            double[] temp = new double[5 * i + 1];
+            for (int j = 0; j < dp.length; j++) {
+                for (int k = 0; k < 6; k++) {
+                    temp[j + k] += dp[j] * (1.0 / 6.0);
+                }
+            }
+            dp = temp;
+        }
+        return dp;
+    }
+
+    public double[] dicesProbability1(int n) {
+        int[][] dp = new int[n + 1][6 * n + 1];
+        for (int i = 1; i <= 6; i++) {
+            dp[1][i] = 1;
+        }
+        for (int i = 2; i <= n; i++) {
+            for (int j = 2; j <= 6 * i; j++) {
+                for (int k = 1; k <= 6; k++) {
+                    if (j - k <= 0) {
+                        break;
+                    }
+                    dp[i][j] += dp[i - 1][j - k];
+                }
+            }
+        }
+        double[] ans = new double[5 * n + 1];
+        double all = Math.pow(6, n);
+
+        for (int i = n; i <= 6 * n; i++) {
+            ans[i - n] = (dp[n][i] * 1.0) / all;
+        }
+        return ans;
+    }
+
+    //优化
+    public double[] dicesProbability2(int n) {
+        int[] dp = new int[6 * n + 1];
+        for (int i = 1; i <= 6; i++) {
+            dp[i] = 1;
+        }
+        for (int i = 2; i <= n; i++) {
+            for (int j = 6 * i; j >= i; j--) {
+                dp[j] = 0;
+                for (int k = 1; k <= 6; k++) {
+                    if (j - k < i - 1) {
+                        break;
+                    }
+                    dp[j] += dp[j - k];
+                }
+            }
+        }
+        double all = Math.pow(6, n);
+        double[] ans = new double[5 * n + 1];
+        for (int i = n; i <= 6 * n; i++) {
+            ans[i - n] = dp[i] * 1.0 / all;
+        }
+        return ans;
+    }
+
+    /**
+     * 剑指 Offer 61. 扑克牌中的顺子
+     *
+     * @param nums
+     * @return
+     */
+    public boolean isStraight(int[] nums) {
+        Arrays.sort(nums);
+        int index = 0;
+        for (int i = 0; i < 4; i++) {
+            if (nums[i] == 0) {
+                index++;
+            }
+            if (nums[i] == nums[i + 1]) {
+                return false;
+            }
+        }
+        return nums[4] - nums[index] < 5;
+    }
+
+    //set+遍历
+    public boolean isStraight1(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        int max = 0, min = 14;
+        for (int num : nums) {
+            if (num == 0) {
+                continue;
+            }
+            max = Math.max(max, num);
+            min = Math.min(min, num);
+            if (set.contains(num)) {
+                return false;
+            }
+            set.add(num);
+        }
+        return max - min < 5;
+    }
+
+    /**
+     * 剑指 Offer 62. 圆圈中最后剩下的数字
+     *
+     * @param n
+     * @param m
+     * @return
+     */
+    public int lastRemaining(int n, int m) {
+        int x = 0;
+        for (int i = 2; i <= n; i++) {
+            x = (x + m) % i;
+        }
+        return x;
+    }
+
+    //递归
+    public int lastRemaining1(int n, int m) {
+        return f(n, m);
+    }
+
+    private int f(int n, int m) {
+        if (n == 1) {
+            return 0;
+        }
+        int x = f(n - 1, m);
+        return (m + x) % n;
+    }
+
+    //迭代
+    public int lastRemaining2(int n, int m) {
+        int f = 0;
+        for (int i = 2; i != n + 1; i++) {
+            f = (m + f) % i;
+        }
+        return f;
+    }
+
+    /**
+     * 剑指 Offer 63. 股票的最大利润
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int res = 0, min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] <= min) {
+                min = prices[i];
+            } else {
+                res = Math.max(res, prices[i] - min);
+            }
+        }
+        return res;
+    }
+
+    public int maxProfit1(int[] prices) {
+        int cost = Integer.MAX_VALUE, profit = 0;
+        for (int price : prices) {
+            cost = Math.min(cost, price);
+            profit = Math.max(profit, price - cost);
+        }
+        return profit;
+    }
+
+    /**
+     * 剑指 Offer 64. 求1+2+…+n
+     *
+     * @param n
+     * @return
+     */
+    public int sumNums(int n) {
+        return recur(n);
+    }
+
+    public int recur(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        return n + recur(n - 1);
+    }
+
+    //短路效应
+    public int sumNums1(int n) {
+        boolean x = n > 1 && (n += sumNums1(n - 1)) > 0;
+        return n;
+    }
 }
 
+/**
+ * 剑指 Offer 59 - II. 队列的最大值
+ */
 class MaxQueue {
 
-    public MaxQueue() {
+    private Queue<Integer> queueA;
+    private Deque<Integer> deque;
 
+    public MaxQueue() {
+        queueA = new LinkedList<>();
+        deque = new LinkedList<>();
     }
 
     public int max_value() {
+        if (!deque.isEmpty()) {
+            return deque.peek();
+        }
         return -1;
     }
 
     public void push_back(int value) {
-
+        queueA.offer(value);
+        while (!deque.isEmpty() && deque.peekLast() < value) {
+            deque.pollLast();
+        }
+        deque.addLast(value);
     }
 
     public int pop_front() {
-        return -1;
+        int popValue = -1;
+        if (!queueA.isEmpty()) {
+            popValue = queueA.poll();
+            if (!deque.isEmpty() && popValue == deque.peekFirst()) {
+                deque.pollFirst();
+            }
+        }
+        return popValue;
     }
 }
