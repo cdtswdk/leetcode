@@ -1071,7 +1071,47 @@ public class likou_jianzhioffer_3 {
     public int[] constructArr(int[] a) {
         int[] res = new int[a.length];
 
+        for (int i = 0, cur = 1; i < a.length; i++) {
+            res[i] = cur;
+            cur *= a[i];
+        }
+        for (int i = a.length - 1, cur = 1; i >= 0; i--) {
+            res[i] *= cur;
+            cur *= a[i];
+        }
         return res;
+    }
+
+    /**
+     * 剑指 Offer 66. 构建乘积数组
+     *
+     * @param a
+     * @return
+     */
+    public int[] constructArr1(int[] a) {
+        if (a.length == 0) {
+            return new int[0];
+        }
+        int[] res = new int[a.length];
+        res[0] = 1;
+        for (int i = 1; i < a.length; i++) {
+            res[i] = res[i - 1] * a[i - 1];
+        }
+        for (int i = a.length - 2, tmp = 1; i >= 0; i--) {
+            tmp *= a[i + 1];
+            res[i] *= tmp;
+        }
+        return res;
+    }
+
+    /**
+     * 剑指 Offer 67. 把字符串转换成整数
+     *
+     * @param str
+     * @return
+     */
+    public int strToInt(String str) {
+        return 0;
     }
 }
 
