@@ -79,7 +79,7 @@ public class likou_jianzhioffer_3 {
         /*int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
         System.out.println(Arrays.toString(maxSlidingWindow(nums, 3)));*/
 
-        MaxQueue maxQueue = new MaxQueue();
+        /*MaxQueue maxQueue = new MaxQueue();
         System.out.println(maxQueue.max_value());
         System.out.println(maxQueue.pop_front());
         System.out.println(maxQueue.pop_front());
@@ -88,7 +88,10 @@ public class likou_jianzhioffer_3 {
         maxQueue.push_back(89);
         System.out.println(maxQueue.pop_front());
         maxQueue.push_back(22);
-        System.out.println(maxQueue.pop_front());
+        System.out.println(maxQueue.pop_front());*/
+
+        System.out.println(strToInt("+-2"));
+
     }
 
     /**
@@ -1110,8 +1113,118 @@ public class likou_jianzhioffer_3 {
      * @param str
      * @return
      */
-    public int strToInt(String str) {
-        return 0;
+    public static int strToInt(String str) {
+        //字符串为空
+        if (str.length() == 0) {
+            return 0;
+        }
+        //去掉首尾空格
+        str = str.trim();
+        //只包含空格
+        if (str.length() == 0) {
+            return 0;
+        }
+        boolean flag = true;
+        StringBuilder builder = new StringBuilder();
+        if (str.charAt(0) == '+') {
+            flag = true;
+        } else if (str.charAt(0) == '-') {
+            flag = false;
+        } else if (str.charAt(0) >= '0' && str.charAt(0) <= '9') {
+            builder.append(str.charAt(0));
+        } else {
+            if (str.charAt(0) >= 'a' && str.charAt(0) <= 'z' ||
+                    str.charAt(0) >= 'A' && str.charAt(0) <= 'Z'
+                    || str.charAt(0) == '.') {
+                return 0;
+            }
+        }
+
+        for (int i = 1; i < str.length(); i++) {
+            if (str.charAt(i) == '-' || str.charAt(i) == '+') {
+                return 0;
+            } else if (str.charAt(i) >= '0' && str.charAt(i) <= '9') {
+                builder.append(str.charAt(i));
+            } else {
+                if (str.charAt(i) == ' ' || ((str.charAt(i) >= 'a' && str.charAt(i) <= 'z')
+                        || (str.charAt(i) >= 'A' && str.charAt(i) <= 'Z'))) {
+                    break;
+                } else {
+                    builder.append(str.charAt(i));
+                }
+            }
+        }
+        System.out.println(builder);
+        if (builder.length() == 0) {
+            return 0;
+        } else {
+            if (str.contains(".")) {
+                long value = Double.valueOf(builder.toString()).longValue();
+                if (flag) {
+                    if (value > Integer.MAX_VALUE) {
+                        return Integer.MAX_VALUE;
+                    } else {
+                        return Math.toIntExact(value);
+                    }
+                } else {
+                    value = -value;
+                    if (value < Integer.MIN_VALUE) {
+                        return Integer.MIN_VALUE;
+                    } else {
+                        return Math.toIntExact(value);
+                    }
+                }
+            }
+            long value = Long.parseLong(builder.toString());
+            //正数
+            if (flag) {
+                if (value > Integer.MAX_VALUE) {
+                    return Integer.MAX_VALUE;
+                } else {
+                    return Math.toIntExact(value);
+                }
+            } else {
+                value = -value;
+                if (value < Integer.MIN_VALUE) {
+                    return Integer.MIN_VALUE;
+                } else {
+                    return Math.toIntExact(value);
+                }
+            }
+        }
+    }
+
+    //res = res*10 + x;
+    public static int strToInt1(String str) {
+        //字符串为空
+        if (str.length() == 0) {
+            return 0;
+        }
+        //去掉首尾空格
+        str = str.trim();
+        //只包含空格
+        if (str.length() == 0) {
+            return 0;
+        }
+        boolean flag = true;
+        char[] chs = str.toCharArray();
+        int i = 1;
+        int res = 0, bndry = Integer.MAX_VALUE / 10;
+        if (chs[0] == '-') {
+            flag = false;
+        } else if (chs[0] != '+') {
+            i = 0;
+        }
+        for (int j = i; j < chs.length; j++) {
+            if (chs[j] < '0' || chs[j] > '9') {
+                break;
+            }
+            if (res > bndry || res == bndry && chs[j] > '7') {
+                return flag ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+            res = res * 10 + (chs[j] - '0');
+        }
+        return flag ? res : -res;
     }
 }
 
