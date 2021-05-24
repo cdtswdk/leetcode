@@ -90,8 +90,20 @@ public class likou_jianzhioffer_3 {
         maxQueue.push_back(22);
         System.out.println(maxQueue.pop_front());*/
 
-        System.out.println(strToInt("+-2"));
+//        System.out.println(strToInt("+-2"));
 
+        TreeNode node1 = new TreeNode(6);
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(8);
+        TreeNode node4 = new TreeNode(0);
+        TreeNode node5 = new TreeNode(4);
+
+        node1.left = node2;
+        node1.right = node3;
+        node2.left = node4;
+        node2.right = node5;
+
+        lowestCommonAncestor(node1, node2, node5);
     }
 
     /**
@@ -1225,6 +1237,67 @@ public class likou_jianzhioffer_3 {
             res = res * 10 + (chs[j] - '0');
         }
         return flag ? res : -res;
+    }
+
+    /**
+     * 剑指 Offer 68 - I. 二叉搜索树的最近公共祖先
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val > p.val && root.val > q.val) {
+            return lowestCommonAncestor(root.left, p, q);
+        }
+        if (root.val < p.val && root.val < q.val) {
+            return lowestCommonAncestor(root.right, p, q);
+        }
+        return root;
+    }
+
+    //迭代
+    public static TreeNode lowestCommonAncestor1(TreeNode root, TreeNode p, TreeNode q) {
+        while (root != null) {
+            if (root.val > p.val && root.val > q.val) {
+                root = root.left;
+            } else if (root.val < p.val && root.val < q.val) {
+                root = root.right;
+            } else {
+                break;
+            }
+        }
+        return root;
+    }
+
+    /**
+     * 剑指 Offer 68 - II. 二叉树的最近公共祖先
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor2(root.left, p, q);
+        TreeNode right = lowestCommonAncestor2(root.right, p, q);
+        if (left == null && right == null) {
+            return null;
+        }
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        return root;
     }
 }
 
