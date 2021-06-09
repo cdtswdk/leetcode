@@ -15,8 +15,18 @@ public class likou_array_1 {
         /*int[] nums = {3, 4, -1, 1};
         System.out.println(firstMissingPositive2(nums));*/
 
-        int[] nums = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
-        System.out.println(trap3(nums));
+        /*int[] nums = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
+        System.out.println(trap3(nums));*/
+
+//        int[][] matrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        int[][] matrix = {{5, 1, 9, 11}, {2, 4, 8, 10}, {13, 3, 6, 7}, {15, 14, 12, 16}};
+        rotate(matrix);
+        for (int[] mat : matrix) {
+            for (int m : mat) {
+                System.out.print(m);
+            }
+            System.out.println();
+        }
     }
 
     /**
@@ -312,4 +322,91 @@ public class likou_array_1 {
         return ans;
     }
 
+    /**
+     * 45. 跳跃游戏 II
+     *
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        int position = nums.length - 1;
+        int steps = 0;
+        while (position > 0) {
+            for (int i = 0; i < position; i++) {
+                if (i + nums[i] >= position) {
+                    position = i;
+                    steps++;
+                    break;
+                }
+            }
+        }
+        return steps;
+    }
+
+    //贪心算法-正向遍历
+    public int jump1(int[] nums) {
+        int length = nums.length;
+        int end = 0;
+        int maxPosition = 0;
+        int steps = 0;
+        for (int i = 0; i < length - 1; i++) {
+            maxPosition = Math.max(maxPosition, i + nums[i]);
+            if (i == end) {
+                end = maxPosition;
+                steps++;
+            }
+        }
+        return steps;
+    }
+
+    /**
+     * 48. 旋转图像
+     *
+     * @param matrix
+     */
+    public static void rotate(int[][] matrix) {
+        int n = matrix.length;
+        int[][] matrix_new = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix_new[j][n - 1 - i] = matrix[i][j];
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            System.arraycopy(matrix_new[i], 0, matrix[i], 0, n);
+        }
+    }
+
+    //原地旋转
+    public static void rotate1(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < (n / 2); i++) {
+            for (int j = 0; j < (n + 1) / 2; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[n - j - 1][i];
+                matrix[n - j - 1][i] = matrix[n - i - 1][n - j - 1];
+                matrix[n - i - 1][n - j - 1] = matrix[j][n - i - 1];
+                matrix[j][n - i - 1] = temp;
+            }
+        }
+    }
+
+    //用翻转代替旋转
+    public static void rotate2(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n / 2; i++) {
+            for (int j = 0; j < n; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[n - 1 - i][j];
+                matrix[n - 1 - i][j] = temp;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
 }
