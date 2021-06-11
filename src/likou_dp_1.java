@@ -107,4 +107,13 @@ public class likou_dp_1 {
         }
         return right - left - 1;
     }
+
+    /**
+     * 121. 买卖股票的最佳时机
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        return 0;
+    }
 }
