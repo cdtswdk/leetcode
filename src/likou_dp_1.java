@@ -1,3 +1,5 @@
+import java.util.Stack;
+
 /**
  * @Auther: chendongtao
  * @Date: 2021/6/10 16:32
@@ -5,7 +7,13 @@
  */
 public class likou_dp_1 {
     public static void main(String[] args) {
-        System.out.println(longestPalindrome1("cbbd"));
+
+//        System.out.println(longestPalindrome1("cbbd"));
+        /*int[] prices = {7, 6, 4, 3, 2, 1};
+        System.out.println(maxProfit(prices));*/
+
+        String s = ")()())";
+        System.out.println(longestValidParentheses(s));
     }
 
     /**
@@ -110,10 +118,150 @@ public class likou_dp_1 {
 
     /**
      * 121. 买卖股票的最佳时机
+     *
      * @param prices
      * @return
      */
-    public int maxProfit(int[] prices) {
-        return 0;
+    public static int maxProfit(int[] prices) {
+
+        int res = 0, buyIn = Integer.MAX_VALUE;
+        for (int price : prices) {
+            if (price < buyIn) {
+                buyIn = price;
+            } else if (price - buyIn > res) {
+                res = price - buyIn;
+            }
+        }
+        return res;
+    }
+
+    //暴力法 超出时间限制
+    public static int maxProfit1(int[] prices) {
+        int res = 0;
+        for (int i = 0; i < prices.length - 1; i++) {
+            for (int j = i + 1; j < prices.length; j++) {
+                int profit = prices[j] - prices[i];
+                if (profit > res) {
+                    res = profit;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 10. 正则表达式匹配
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+        int m = s.length();
+        int n = p.length();
+
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int i = 0; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                //属于*号
+                if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i][j - 2];
+                    if (matches(s, p, i, j - 1)) {
+                        dp[i][j] = dp[i][j] || dp[i - 1][j];
+                    }
+                } else { //不是*号
+                    if (matches(s, p, i, j)) {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    private boolean matches(String s, String p, int i, int j) {
+        if (i == 0) {
+            return false;
+        }
+        if (p.charAt(j - 1) == '.') {
+            return true;
+        }
+        return s.charAt(i - 1) == p.charAt(j - 1);
+    }
+
+    /**
+     * 32. 最长有效括号
+     *
+     * @param s
+     * @return
+     */
+    public static int longestValidParentheses(String s) {
+        int res = 0;
+        Stack<Integer> stack = new Stack<>();
+        stack.push(-1);
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+            } else {
+                stack.pop();
+                if (stack.isEmpty()) {
+                    stack.push(i);
+                } else {
+                    res = Math.max(res, i - stack.peek());
+                }
+            }
+        }
+        return res;
+    }
+
+    //不需要额外的空间
+    public static int longestValidParentheses1(String s) {
+        int res = 0;
+        int left = 0, right = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else {
+                right++;
+            }
+            if (left == right) {
+                res = Math.max(res, left + right);
+            } else if (right > left) {
+                left = 0;
+                right = 0;
+            }
+        }
+        left = right = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else {
+                right++;
+            }
+            if (left == right) {
+                res = Math.max(res, left + right);
+            } else if (right > left) {
+                left = right = 0;
+            }
+        }
+        return res;
+    }
+
+    //动态规划
+    public static int longestValidParentheses2(String s) {
+        int res = 0;
+        int[] dp = new int[s.length()];
+        for (int i = 1; i < s.length(); i++) {
+            if (s.charAt(i) == ')') {
+                if (s.charAt(i - 1) == '(') {
+                    dp[i] = (i >= 2 ? dp[i - 2] : 0) + 2;
+                } else if (i - dp[i - 1] > 0 && s.charAt(i - dp[i - 1] - 1) == '(') {
+                    dp[i] = dp[i - 1] + 2 + ((i - dp[i - 1] >= 2) ? dp[i - dp[i - 1] - 2] : 0);
+                }
+                res = Math.max(res, dp[i]);
+            }
+        }
+        return res;
     }
 }
