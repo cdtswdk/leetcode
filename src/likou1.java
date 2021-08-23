@@ -27,10 +27,14 @@ public class likou1 {
         System.out.println(threeSum(nums));
     }
 
-    /*public static void merge(int[] nums1, int m, int[] nums2, int n) {
-        System.arraycopy(nums2, 0, nums1, m, n);
-        Arrays.sort(nums1);
-    }*/
+    /**
+     * 88. 合并两个有序数组
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
     public static void merge(int[] nums1, int m, int[] nums2, int n) {
         int[] num1_copy = new int[m];
         System.arraycopy(nums1, 0, num1_copy, 0, m);
@@ -49,6 +53,13 @@ public class likou1 {
 
     }
 
+    /**
+     * 100. 相同的树
+     *
+     * @param p
+     * @param q
+     * @return
+     */
     public static boolean isSameTree(TreeNode p, TreeNode q) {
 
         if (p == null && q == null) {
@@ -64,6 +75,12 @@ public class likou1 {
         return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
 
+    /**
+     * 101. 对称二叉树
+     *
+     * @param root
+     * @return
+     */
     public boolean isSymmetric(TreeNode root) {
 
         if (root == null) {
@@ -84,6 +101,12 @@ public class likou1 {
         return isMirror(left.left, right.right) && isMirror(left.right, right.left);
     }
 
+    /**
+     * 5. 最长回文子串
+     *
+     * @param s
+     * @return
+     */
     public static String longestPalindrome(String s) {
         int len = s.length();
         if (len < 2) {
@@ -113,6 +136,13 @@ public class likou1 {
         return true;
     }
 
+    /**
+     * 6. Z 字形变换
+     *
+     * @param s
+     * @param numRows
+     * @return
+     */
     public static String convert(String s, int numRows) {
         if (numRows == 1) {
             return s;
@@ -129,33 +159,12 @@ public class likou1 {
         return String.join("", rows);
     }
 
-    /*public static int myAtoi(String s) {
-
-        s = s.trim();
-
-        int len = s.length();
-        StringBuilder result = new StringBuilder();
-        boolean isPosNum = true;
-        char[] chars = s.toCharArray();
-
-        for (int i = 0; i < len; i++) {
-            if (i == 0 && chars[i] == '-') {
-                isPosNum = false;
-                continue;
-            }
-            if (chars[i] >= 'a' && chars[i] <= 'z' || chars[i] >= 'A' && chars[i] <= 'Z') {
-                break;
-            }
-        }
-        if(result.length() == 0){
-            result.append(0);
-        }
-        long parseLong = Long.parseLong(result.toString());
-
-
-        return 0;
-    }*/
-
+    /**
+     * 8. 字符串转换整数 (atoi)
+     *
+     * @param s
+     * @return
+     */
     public static int myAtoi(String s) {
 
         s = s.trim();
@@ -210,23 +219,12 @@ public class likou1 {
         return (int) parseLong;
     }
 
-    /*public static int maxArea(int[] height) {
-        if(height == null || height.length == 0){
-            return 0;
-        }
-        int vo = 0, newVo = 0;
-        for (int i = 0; i < height.length - 1; i++) {
-            for (int j = i + 1; j < height.length; j++) {
-                if (height[i] < height[j]) {
-                    newVo = (j - i) * height[i];
-                } else {
-                    newVo = (j - i) * height[j];
-                }
-                vo = vo > newVo ? vo : newVo;
-            }
-        }
-        return vo;
-    }*/
+    /**
+     * 11. 盛最多水的容器
+     *
+     * @param height
+     * @return
+     */
     public static int maxArea(int[] height) {
         if (height == null || height.length == 0) {
             return 0;
@@ -245,6 +243,31 @@ public class likou1 {
         return vo;
     }
 
+    // 超时
+    public static int maxArea_1(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int vo = 0, newVo = 0;
+        for (int i = 0; i < height.length - 1; i++) {
+            for (int j = i + 1; j < height.length; j++) {
+                if (height[i] < height[j]) {
+                    newVo = (j - i) * height[i];
+                } else {
+                    newVo = (j - i) * height[j];
+                }
+                vo = vo > newVo ? vo : newVo;
+            }
+        }
+        return vo;
+    }
+
+    /**
+     * 12. 整数转罗马数字
+     *
+     * @param num
+     * @return
+     */
     public static String intToRoman(int num) {
 
         StringBuilder result = new StringBuilder();
@@ -260,37 +283,91 @@ public class likou1 {
         return result.toString();
     }
 
+    /**
+     * 15. 三数之和
+     *
+     * @param nums
+     * @return
+     */
     public static List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < nums.length - 2; i++) {
-            for (int j = i + 1; j < nums.length - 1; j++) {
-                for (int k = j + 1; k < nums.length; k++) {
-                    if (nums[i] + nums[j] + nums[k] == 0) {
-                        List<Integer> tmp = new ArrayList<>(Arrays.asList(nums[i], nums[j], nums[k]));
-                        boolean flag = true;
-                        for (List<Integer> list : res) {
-                            List<Integer> one = new ArrayList<>(list), two = new ArrayList<>(tmp);
-                            Collections.sort(one);
-                            Collections.sort(two);
-                            if (one.equals(two)) {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) {
-                            res.add(tmp);
-                        }
-                    }
+        if (nums == null || nums.length < 3) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        int n = nums.length;
+        //枚举i
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int k = n - 1;
+            int target = -nums[i];
+            //枚举j
+            for (int j = i + 1; j < nums.length; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
                 }
+                while (j < k && nums[j] + nums[k] > target) {
+                    k--;
+                }
+                // 如果指针重合，随着 b 后续的增加
+                // 就不会有满足 a+b+c=0 并且 b<c 的 c 了，可以退出循环
+                if (j == k) {
+                    break;
+                }
+                if (nums[j] + nums[k] == target) {
+                    List<Integer> temp = new ArrayList<>(Arrays.asList(nums[i], nums[j], nums[k]));
+                    result.add(temp);
+                }
+
             }
         }
-        return res;
+
+        return result;
     }
 
+    /**
+     * 19. 删除链表的倒数第 N 个结点
+     * @param head
+     * @param n
+     * @return
+     */
     public static ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode dump = new ListNode(0, head);
+        ListNode first = head, second = head;
+        for (int i = 0; i < n; i++) {
+            first = first.next;
+        }
+        while (first != null) {
+            first = first.next;
+            second = second.next;
+        }
+        second.next = second.next.next;
+        return dump.next;
+    }
 
-
-        return null;
+    /**
+     * 633. 平方数之和
+     *
+     * @param c
+     * @return
+     */
+    public static boolean judgeSquareSum(int c) {
+        int left = 0, right = (int) Math.sqrt(c);
+        while (left <= right) {
+            if (left * left + right * right == c) {
+                return true;
+            } else if (left * left + right * right > c) {
+                right--;
+            } else {
+                left++;
+            }
+        }
+        return false;
     }
 }
 

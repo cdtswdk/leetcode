@@ -890,6 +890,7 @@ public class likou_array {
         }
         return new int[]{leftIndex, rightIndex - 1};
     }
+
     private static int searchrange(int[] nums, int target) {
         int left = 0, right = nums.length;
         while (left < right) {

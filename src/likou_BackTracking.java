@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Auther: chendongtao
@@ -24,8 +22,54 @@ public class likou_BackTracking {
 //        combine(4, 2);
 //        int[] nums = {1, 2, 3};
 //        subsets(nums);
-        int[] nums = {4, 4, 4, 1, 4};
-        subsetsWithDup(nums);
+//        int[] nums = {4, 4, 4, 1, 4};
+//        subsetsWithDup(nums);
+//        String digits = "23";
+//        letterCombinations(digits);
+//        char[][] board = {{'A', 'B', 'C', 'E'}, {'S', 'F', 'C', 'S'}, {'A', 'D', 'E', 'E'}};
+//        char[][] board = {{'a'}};
+//        System.out.println(exist(board, "SEE"));
+        System.out.println(getPermutation(3, 3));
+        System.out.println(getPermutation_1(3, 3));
+    }
+
+    /**
+     * 17. 电话号码的字母组合
+     *
+     * @param digits
+     * @return
+     */
+    public static List<String> letterCombinations(String digits) {
+        Map<Character, String> map = new HashMap<>() {{
+            put('2', "abc");
+            put('3', "def");
+            put('4', "ghi");
+            put('5', "jkl");
+            put('6', "mno");
+            put('7', "pqrs");
+            put('8', "tuv");
+            put('9', "wxyz");
+        }};
+        List<String> result = new ArrayList<>();
+        if (digits == null || digits.length() == 0) {
+            return result;
+        }
+        dfs_letterCombinations(map, digits, 0, result, new StringBuilder());
+        return result;
+    }
+
+    private static void dfs_letterCombinations(Map<Character, String> map, String digits, int index, List<String> result, StringBuilder path) {
+        if (index == digits.length()) {
+            result.add(path.toString());
+            return;
+        }
+        char ch = digits.charAt(index);
+        String letters = map.get(ch);
+        for (int i = 0; i < letters.length(); i++) {
+            path.append(letters.charAt(i));
+            dfs_letterCombinations(map, digits, index + 1, result, path);
+            path.deleteCharAt(path.length() - 1);
+        }
     }
 
     /**
@@ -191,6 +235,148 @@ public class likou_BackTracking {
         temp.remove(temp.size() - 1);
         dfs_subsets_1(nums, cur + 1, temp, result);
 
+    }
+
+    /**
+     * 60. 排列序列
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public static String getPermutation(int n, int k) {
+        List<List<String>> result = new ArrayList<>();
+        List<String> path = new ArrayList<>();
+        boolean[] visited = new boolean[n];
+        dfs_getPermutation(n, k, 0, visited, path, result);
+        return String.join("", result.get(k - 1));
+    }
+
+    private static boolean dfs_getPermutation(int n, int k, int index, boolean[] visited, List<String> path, List<List<String>> result) {
+        if (index == n) {
+            result.add(new ArrayList<>(path));
+            if (result.size() == k) {
+                return true;
+            }
+            return false;
+        }
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i - 1]) {
+                visited[i - 1] = true;
+                path.add(String.valueOf(i));
+                boolean flag = dfs_getPermutation(n, k, index + 1, visited, path, result);
+                if (flag) {
+                    return true;
+                }
+                path.remove(path.size() - 1);
+                visited[i - 1] = false;
+            }
+        }
+        return false;
+    }
+
+    // 回溯搜索算法 + 剪枝 ，直接来到叶子结点
+    public static String getPermutation_1(int n, int k) {
+        int[] factorial = new int[n + 1];
+        boolean[] used = new boolean[n + 1];
+        calculateFactorial(n, factorial);
+        StringBuilder path = new StringBuilder();
+        dfs_getPermutation_1(n, k, 0, factorial, used, path);
+        return path.toString();
+    }
+
+    private static void dfs_getPermutation_1(int n, int k, int index, int[] factorial, boolean[] used, StringBuilder path) {
+        if (index == n) {
+            return;
+        }
+        int cnt = factorial[n - 1 - index];
+        for (int i = 1; i <= n; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (cnt < k) {
+                k -= cnt;
+                continue;
+            }
+            path.append(i);
+            used[i] = true;
+            dfs_getPermutation_1(n, k, index + 1, factorial, used, path);
+            return;
+        }
+    }
+
+    private static void calculateFactorial(int n, int[] factorial) {
+        factorial[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            factorial[i] = factorial[i - 1] * i;
+        }
+    }
+
+    // 有序数组（链表）模拟
+    public static String getPermutation_2(int n, int k) {
+        k--;
+        int[] factorial = new int[n];
+        factorial[0] = 1;
+        for (int i = 1; i < n; i++) {
+            factorial[i] = factorial[i - 1] * i;
+        }
+        List<Integer> nums = new LinkedList<>();
+        for (int i = 1; i <= n; i++) {
+            nums.add(i);
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = n - 1; i >= 0; i--) {
+            int index = k / factorial[i];
+            builder.append(nums.remove(index));
+            k -= index * factorial[i];
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 79. 单词搜索
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public static boolean exist(char[][] board, String word) {
+        int m = board.length, n = board[0].length;
+        boolean[][] visited = new boolean[m][n];
+        int[][] move = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dfs_word_exist(board, word, i, j, visited, move, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean dfs_word_exist(char[][] board, String word, int row, int col, boolean[][] visited, int[][] move, int begin) {
+        if (board[row][col] != word.charAt(begin)) {
+            return false;
+        } else if (begin == word.length() - 1) {
+            return true;
+        }
+        visited[row][col] = true;
+        for (int i = 0; i < 4; i++) {
+            int x = move[i][0], y = move[i][1];
+            if (row + x < 0 || row + x >= board.length || col + y < 0 || col + y >= board[0].length) {
+                continue;
+            }
+            int r = row + x, c = col + y;
+            if (visited[r][c]) {
+                continue;
+            }
+            boolean flag = dfs_word_exist(board, word, r, c, visited, move, begin + 1);
+            if (flag) {
+                return true;
+            }
+        }
+        visited[row][col] = false;
+        return false;
     }
 
     /**
