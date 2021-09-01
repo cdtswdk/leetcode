@@ -532,15 +532,13 @@ public class likou_jianzhioffer_2 {
 
     // 动态规划 + 线性遍历
     public static int lengthOfLongestSubstring1(String s) {
-        Map<Character, Integer> map = new HashMap<>();
         int res = 0, tmp = 0;
         for (int i = 0; i < s.length(); i++) {
             int j = i - 1;
             while (j >= 0 && s.charAt(j) != s.charAt(i)) {
                 j--;
             }
-            map.put(s.charAt(i), i);
-            tmp = tmp < j - i ? tmp + 1 : j - i;
+            tmp = tmp < i - j ? tmp + 1 : i - j;
             res = Math.max(res, tmp);
         }
         return res;

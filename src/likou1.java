@@ -284,6 +284,117 @@ public class likou1 {
     }
 
     /**
+     * 14. 最长公共前缀 横向比较
+     *
+     * @param strs
+     * @return
+     */
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        int length = strs[0].length();
+        int count = strs.length;
+        for (int i = 0; i < length; i++) {
+            char c = strs[0].charAt(i);
+            for (int j = 1; j < count; j++) {
+                if (i == strs[j].length() || strs[j].charAt(i) != c) {
+                    return strs[0].substring(0, i);
+                }
+            }
+        }
+        return strs[0];
+    }
+
+    // 纵向比较
+    public String longestCommonPrefix1(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        String prefix = strs[0];
+        int count = strs.length;
+        for (int i = 1; i < count; i++) {
+            prefix = getLongestCommonPrefix(prefix, strs[i]);
+            if (prefix.length() == 0) {
+                break;
+            }
+        }
+        return prefix;
+    }
+
+    private String getLongestCommonPrefix(String str1, String str2) {
+        int len = Math.min(str1.length(), str2.length());
+        int index = 0;
+        while (index < len && str1.charAt(index) == str2.charAt(index)) {
+            index++;
+        }
+        return str1.substring(0, index);
+    }
+
+    // 分治
+    public String longestCommonPrefix2(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        } else {
+            return getLongestCommonPrefix2(strs, 0, strs.length - 1);
+        }
+    }
+
+    private String getLongestCommonPrefix2(String[] strs, int start, int end) {
+        if (start == end) {
+            return strs[start];
+        }
+        int mid = (end - start) / 2 + start;
+        String lcpLeft = getLongestCommonPrefix2(strs, start, mid);
+        String lcpRight = getLongestCommonPrefix2(strs, mid + 1, end);
+        return CommonPrefix(lcpLeft, lcpRight);
+    }
+
+    private String CommonPrefix(String lcpLeft, String lcpRight) {
+        int minLen = Math.min(lcpLeft.length(), lcpRight.length());
+        for (int i = 0; i < minLen; i++) {
+            if (lcpLeft.charAt(i) != lcpRight.charAt(i)) {
+                return lcpLeft.substring(0, i);
+            }
+        }
+        return lcpLeft.substring(0, minLen);
+    }
+
+    // 二分查找
+    public String longestCommonPrefix3(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        int minLen = Integer.MAX_VALUE;
+        for (int i = 0; i < strs.length; i++) {
+            minLen = Math.min(minLen, strs[i].length());
+        }
+        int low = 0, high = minLen;
+        while (low < high) {
+            int mid = (high - low + 1) / 2 + low;
+            if (isCommonPrefix(strs, mid)) {
+                low = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return strs[0].substring(0, low);
+    }
+
+    private boolean isCommonPrefix(String[] strs, int mid) {
+        String str0 = strs[0].substring(0, mid);
+        int count = strs.length;
+        for (int i = 1; i < count; i++) {
+            for (int j = 0; j < mid; j++) {
+                if (str0.charAt(j) != strs[i].charAt(j)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * 15. 三数之和
      *
      * @param nums
@@ -329,6 +440,7 @@ public class likou1 {
 
     /**
      * 19. 删除链表的倒数第 N 个结点
+     *
      * @param head
      * @param n
      * @return
