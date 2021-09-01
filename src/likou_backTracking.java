@@ -5,7 +5,7 @@ import java.util.*;
  * @Date: 2021/8/17 12:31
  * @Description:
  */
-public class likou_BackTracking {
+public class likou_backTracking {
     public static void main(String[] args) {
         /*List<String> list = restoreIpAddresses("25525522135");
         for (String s : list) {
